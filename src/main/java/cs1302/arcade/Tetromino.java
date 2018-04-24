@@ -1,5 +1,6 @@
 package cs1302.arcade;
 
+import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 
 public class Tetromino {
