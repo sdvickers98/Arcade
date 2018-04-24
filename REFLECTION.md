@@ -7,13 +7,13 @@ that the Markdown is transformed into nice looking HTML.
 
 Here is a sample entry (delete this line; also: feel free to copy/paste/modify):
 
-## SUN 2017-11-12 @ 11:55 PM EST
+## FRI 2018-04-20 @ 11:55 PM EST
 
-1. **DONE:** Downloaded the skeleton code.
+1. **DONE:** Downloaded skeleton code and decided on Tetris and Checkers as the 
+   two games for our arcade. Read the project description
 
-2. **TODO:** Finish reading the project description.
+2. **TODO:** Begin implementing Tetris and think about the overall design for 
+   making the arcade menu.
 
-3. **PROB:** Had a hard time scheduling physicial meetings with each other at
-   first, but now that we've settled on a regular day/time things are looking
-   great! 
+3. **PROB:** Nothing so far!
 
