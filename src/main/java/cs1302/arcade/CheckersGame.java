@@ -23,12 +23,14 @@ public class CheckersGame extends Stage{
     private Scene game = new Scene(border);
 
     //get images for the board
-    Image redTile = new Image("https://www.colorcombos.com/images/colors/FF0000.png");
-    Image blackTile = new Image("https://www.colorcombos.com/images/colors/000000.png");
-    Image blackCrownPiece = new Image("https://goo.gl/yFWSJu");
-    Image blackPiece = new Image("http://www.goo.gl/RmmWn2");
-    Image redCrownPiece = new Image("https://goo.gl/uYGUsC");
-    Image redPiece = new Image("https://goog.gl/qLbxia");
+    //  Image redTile = new Image("https://www.colorcombos.com/images/colors/FF0000.png");
+    Image redTile = new Image("file:src/main/resources/images/redTile.png");
+    //  Image blackTile = new Image("https://www.colorcombos.com/images/colors/000000.png");
+    Image blackTile = new Image("file:src/main/resources/images/blackTile.png");
+    Image blackCrownPiece = new Image("file:src/main/resources/images/blackKing.png");
+    Image blackPiece = new Image("file:src/main/resources/images/black.png");
+    Image redCrownPiece = new Image("file:src/main/resources/images/redKing.png");
+    Image redPiece = new Image("file:src/main/resources/images/red.png");
     ImageView[][] tiles = new ImageView[8][8]; //2D array holds the imageViews for the board
     int clickCount = 0;
     String firstClick;
@@ -154,7 +156,7 @@ public class CheckersGame extends Stage{
 		    }else{
 			tiles[x][y].setImage(blackTile); //sets tile to black
 		    }
-		    tiles[x][y].setImage(blackTile); //sets tile to black
+		    // tiles[x][y].setImage(blackTile); //sets tile to black
 		    tiles[x][y].setFitWidth(100);
 		    tiles[x][y].setFitHeight(100); 
 		    grid.add(tiles[x][y], y, x);

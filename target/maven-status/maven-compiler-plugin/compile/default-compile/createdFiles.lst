@@ -1,6 +1,6 @@
-cs1302/arcade/TetrisGame.class
+cs1302/arcade/ArcadeApp.class
 cs1302/arcade/CheckersGame.class
+cs1302/arcade/TetrisGame.class
 cs1302/arcade/TetrisPiece.class
 cs1302/arcade/Tetromino.class
 cs1302/arcade/Tetromino$Shape.class
-cs1302/arcade/ArcadeApp.class
