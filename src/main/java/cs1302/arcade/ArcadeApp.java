@@ -1,8 +1,7 @@
-//dont mind this comment
+
 package cs1302.arcade;
 
 import java.util.Random;
-
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Group;
@@ -10,6 +9,9 @@ import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
+import javafx.scene.layout.HBox;
+import javafx.scene.control.Button;
+import javafx.stage.Modality;
 
 public class ArcadeApp extends Application {
 
@@ -30,6 +32,29 @@ public class ArcadeApp extends Application {
 	r.setY(50);                          // 50ps in the y direction (down)
 	group.getChildren().add(r);          // add to main container
 	
+	HBox homeScreen = new HBox();
+	Button tetris = new Button("Tetris");
+	Button checkers = new Button("Checkers");
+	homeScreen.getChildren().addAll(tetris,checkers);
+
+
+	tetris.setOnAction(e -> {
+
+	       	Stage T = new TetrisGame();
+		T.initModality(Modality.APPLICATION_MODAL);
+		T.setTitle("Tetris");
+		T.showAndWait();
+	    });
+
+
+	checkers.setOnAction(e -> {
+
+		Stage C = new CheckersGame();
+		C.initModality(Modality.APPLICATION_MODAL);
+		C.setTitle("Checkers");
+		C.showAndWait();
+	    });
+
 	// when the user clicks on the rectangle, send to random position
 	r.setOnMouseClicked(event -> {
 		System.out.println(event);
@@ -45,7 +70,7 @@ public class ArcadeApp extends Application {
 		// TODO bounds checking
 	    });
 
-        Scene scene = new Scene(group, 640, 480);
+        Scene scene = new Scene(homeScreen, 640, 480);
         stage.setTitle("cs1302-arcade!");
         stage.setScene(scene);
 	stage.sizeToScene();
