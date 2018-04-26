@@ -6,7 +6,7 @@ import javafx.scene.shape.Rectangle;
 
 public class TetrisPiece extends Rectangle {
 
-    private static final int PIECE_SIZE = 50;
+    private static final int PIECE_SIZE = 30;
     private int col;
     private int row;
 
@@ -19,5 +19,9 @@ public class TetrisPiece extends Rectangle {
 	this.row = row;
 	GridPane.setConstraints(this, col, row);
     } // setGridPosition
+
+    public int getRow() { return row; } // getRow
+
+    public int getCol() { return col; } // getCol
     
 } // Piece
