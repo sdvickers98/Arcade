@@ -30,8 +30,8 @@ public class CheckersGame extends Stage{
     Image redPiece = new Image("https://goog.gl/qLbxia");
     ImageView[][] tiles = new ImageView[8][8]; //2D array holds the imageViews for the board
 
-    Group g = new Group(tiles[0][0]);
-    g.setOnMouseClicked(e -> System.out.println(e));
+    //Group g = new Group(tiles[0][0]);
+    //    g.setOnMouseClicked(e -> System.out.println(e));
     /******************************
      * public CheckersGame()
      *
