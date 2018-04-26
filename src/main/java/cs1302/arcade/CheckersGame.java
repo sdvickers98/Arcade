@@ -13,6 +13,7 @@ import javafx.scene.image.Image;
 import javafx.scene.Node;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.Group;
+import java.lang.Math;
 
 
 public class CheckersGame extends Stage{
@@ -29,9 +30,10 @@ public class CheckersGame extends Stage{
     Image redCrownPiece = new Image("https://goo.gl/uYGUsC");
     Image redPiece = new Image("https://goog.gl/qLbxia");
     ImageView[][] tiles = new ImageView[8][8]; //2D array holds the imageViews for the board
+    int clickCount = 0;
+    String firstClick;
+    String secondClick;
 
-    //Group g = new Group(tiles[0][0]);
-    //    g.setOnMouseClicked(e -> System.out.println(e));
     /******************************
      * public CheckersGame()
      *
@@ -42,6 +44,39 @@ public class CheckersGame extends Stage{
 	super();
 	init();
 	setScene(game);
+
+	/*
+	 * Implement the game
+	 * user first clicks image (piece) they want to move
+	 * user then click where they want to move the image (piece) too
+	 */
+	grid.addEventHandler(MouseEvent.MOUSE_CLICKED, e ->{
+		clickCount++; //keeps track
+		onClick(e);
+		System.out.println(clickCount); //prints the number of times the grid has been clicked so far
+		if(clickCount == 2){
+		    clickCount = 0;
+		    System.out.println("first click: " + firstClick + "\n" + "second click: " + secondClick); //prints the coordinates of the first and second click
+		}
+	    });
+    }
+    
+    /************************************
+     * public void onClick(MouseEvent event)
+     *
+     * This method will replace the image between imageViews
+     * The images that will be replaces are based on the coordinates
+     * the user gives from each mouse click 
+     *
+     * @param MouseEvent
+     * @returns void
+     ***********************************/
+    public void onClick(MouseEvent event){
+	int row = (int)Math.ceil(event.getY()/100) -1;
+	int col = (int)Math.ceil(event.getX()/100) -1;
+	if(clickCount == 1) firstClick = row + " " + col;
+	if(clickCount == 2) secondClick = row + " " + col;
+
     }
 
     /********************************
