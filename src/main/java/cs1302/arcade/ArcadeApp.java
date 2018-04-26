@@ -32,7 +32,7 @@ public class ArcadeApp extends Application {
 	r.setY(50);                          // 50ps in the y direction (down)
 	group.getChildren().add(r);          // add to main container
 	
-HBox homeScreen = new HBox();
+	HBox homeScreen = new HBox();
 	Button tetris = new Button("Tetris");
 	Button checkers = new Button("Checkers");
 	homeScreen.getChildren().addAll(tetris,checkers);
@@ -42,11 +42,8 @@ HBox homeScreen = new HBox();
 
 	       	Stage T = new TetrisGame();
 		T.initModality(Modality.APPLICATION_MODAL);
-
+		T.setTitle("Tetris");
 		T.showAndWait();
-
-
-
 	    });
 
 
@@ -54,6 +51,7 @@ HBox homeScreen = new HBox();
 
 		Stage C = new CheckersGame();
 		C.initModality(Modality.APPLICATION_MODAL);
+		C.setTitle("Checkers");
 		C.showAndWait();
 	    });
 
