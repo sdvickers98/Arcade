@@ -10,6 +10,10 @@ import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.Image;
+import javafx.scene.Node;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.Group;
+
 
 public class CheckersGame extends Stage{
 
@@ -24,7 +28,10 @@ public class CheckersGame extends Stage{
     Image blackPiece = new Image("http://www.goo.gl/RmmWn2");
     Image redCrownPiece = new Image("https://goo.gl/uYGUsC");
     Image redPiece = new Image("https://goog.gl/qLbxia");
+    ImageView[][] tiles = new ImageView[8][8]; //2D array holds the imageViews for the board
 
+    Group g = new Group(tiles[0][0]);
+    g.setOnMouseClicked(e -> System.out.println(e));
     /******************************
      * public CheckersGame()
      *
@@ -71,7 +78,7 @@ public class CheckersGame extends Stage{
 	grid.setGridLinesVisible(true);
 	int numCols = 8;
 	int numRows = 8;
-	ImageView[][] tiles = new ImageView[numRows][numCols]; //2D array holds the imageViews for the board
+	//	ImageView[][] tiles = new ImageView[numRows][numCols]; //2D array holds the imageViews for the board
 	ImageView tempTile;
 	boolean isRed = true;
 	for(int i = 0; i <numCols; i++){
