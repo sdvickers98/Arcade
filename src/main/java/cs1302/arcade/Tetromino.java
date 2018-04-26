@@ -9,36 +9,36 @@ public class Tetromino {
 	I, J, L, O, S, T, Z;
     }
 
-    public Piece[] pieces = new Piece[4];
+    public TetrisPiece[] pieces = new TetrisPiece[4];
 
     public Tetromino(Shape shape) {
-	if (shape = Shape.I) {
+	if (shape == Shape.I) {
 	    for (int i = 0; i < pieces.length; i++) {
-		pieces[i] = new Piece(Color.CYAN);
+		pieces[i] = new TetrisPiece(Color.CYAN);
 	    }
-	} else if (shape = Shape.J) {
+	} else if (shape == Shape.J) {
 	    for (int i = 0; i < pieces.length; i++) {
-		pieces[i] = new Piece(Color.BLUE);
+		pieces[i] = new TetrisPiece(Color.BLUE);
 	    }
-	} else if (shape = Shape.L) {
+	} else if (shape == Shape.L) {
 	    for (int i = 0; i < pieces.length; i++) {
-		pieces[i] = new Piece(Color.ORANGE);
+		pieces[i] = new TetrisPiece(Color.ORANGE);
 	    }
-	} else if (shape = Shape.O) {
+	} else if (shape == Shape.O) {
 	    for (int i = 0; i < pieces.length; i++) {
-		pieces[i] = new Piece(Color.YELLOW);
+		pieces[i] = new TetrisPiece(Color.YELLOW);
 	    }
-	} else if (shape = Shape.S) {
+	} else if (shape == Shape.S) {
 	    for (int i = 0; i < pieces.length; i++) {
-		pieces[i] = new Piece(Color.LAWNGREEN);
+		pieces[i] = new TetrisPiece(Color.LAWNGREEN);
 	    }
-	} else if (shape = Shape.T) {
+	} else if (shape == Shape.T) {
 	    for (int i = 0; i < pieces.length; i++) {
-		pieces[i] = new Piece(Color.MEDIUMPURPLE);
+		pieces[i] = new TetrisPiece(Color.MEDIUMPURPLE);
 	    }
-	} else if (shape = Shape.Z) {
+	} else if (shape == Shape.Z) {
 	    for (int i = 0; i < pieces.length; i++) {
-		pieces[i] = new Piece(Color.RED);
+		pieces[i] = new TetrisPiece(Color.RED);
 	    }
 	} else {
 	    System.err.println("Invalid Tetromino Shape entered");
