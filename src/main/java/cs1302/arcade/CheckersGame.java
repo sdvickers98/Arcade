@@ -16,25 +16,57 @@ public class CheckersGame extends Stage{
     private GridPane grid = new GridPane();
     private BorderPane border = new BorderPane(); //border pane to put grid in center and scoreboard on one of the sides
     private Scene game = new Scene(border);
+
+    //get images for the board
     Image redTile = new Image("https://www.colorcombos.com/images/colors/FF0000.png");
     Image blackTile = new Image("https://www.colorcombos.com/images/colors/000000.png");
+    Image blackCrownPiece = new Image("https://goo.gl/yFWSJu");
+    Image blackPiece = new Image("http://www.goo.gl/RmmWn2");
+    Image redCrownPiece = new Image("https://goo.gl/uYGUsC");
+    Image redPiece = new Image("https://goog.gl/qLbxia");
 
+    /******************************
+     * public CheckersGame()
+     *
+     * This is the CheckersGame class Constructor
+     *
+     ******************************/
     public CheckersGame(){	
 	super();
 	init();
 	setScene(game);
     }
 
-    //gets grid
+    /********************************
+     * public GridPane getGrid()
+     *
+     * Allows the ability to get the grid the user will play on
+     *
+     * @returns GridPane
+     *******************************/
     public GridPane getGrid(){
 	return grid;
     }
-    //sets grid
+
+    /*********************************
+     * public void setGrid(GridPane grid)
+     *
+     * Allows the ability to access and set the grid the user will play on
+     *
+     * @param GridPane grid
+     * @returns void
+     ********************************/
     public void setGrid(GridPane grid){
 	this.grid = grid;
     }
    
-
+    /***************************************
+     * public void init()
+     *
+     * This method sets up the grid that the user will play on. 
+     * 
+     * @returns void*
+     **************************************/
     public void init(){
 	grid.setGridLinesVisible(true);
 	int numCols = 8;
@@ -73,6 +105,13 @@ public class CheckersGame extends Stage{
 		    isRed = false; //so no side by side same colors
 		}
 		else{
+		    if(x < 3){
+			tiles[x][y].setImage(redPiece); //sets tile to a red piece
+		    }else if(x > 4){
+			tiles[x][y].setImage(blackPiece);
+		    }else{
+			tiles[x][y].setImage(blackTile); //sets tile to black
+		    }
 		    tiles[x][y].setImage(blackTile); //sets tile to black
 		    tiles[x][y].setFitWidth(100);
 		    tiles[x][y].setFitHeight(100); 
