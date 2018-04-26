@@ -10,6 +10,11 @@ import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.Image;
+import javafx.scene.Node;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.Group;
+import java.lang.Math;
+
 
 public class CheckersGame extends Stage{
 
@@ -18,12 +23,18 @@ public class CheckersGame extends Stage{
     private Scene game = new Scene(border);
 
     //get images for the board
-    Image redTile = new Image("https://www.colorcombos.com/images/colors/FF0000.png");
-    Image blackTile = new Image("https://www.colorcombos.com/images/colors/000000.png");
-    Image blackCrownPiece = new Image("https://goo.gl/yFWSJu");
-    Image blackPiece = new Image("http://www.goo.gl/RmmWn2");
-    Image redCrownPiece = new Image("https://goo.gl/uYGUsC");
-    Image redPiece = new Image("https://goog.gl/qLbxia");
+    //  Image redTile = new Image("https://www.colorcombos.com/images/colors/FF0000.png");
+    Image redTile = new Image("file:src/main/resources/images/redTile.png");
+    //  Image blackTile = new Image("https://www.colorcombos.com/images/colors/000000.png");
+    Image blackTile = new Image("file:src/main/resources/images/blackTile.png");
+    Image blackCrownPiece = new Image("file:src/main/resources/images/blackKing.png");
+    Image blackPiece = new Image("file:src/main/resources/images/black.png");
+    Image redCrownPiece = new Image("file:src/main/resources/images/redKing.png");
+    Image redPiece = new Image("file:src/main/resources/images/red.png");
+    ImageView[][] tiles = new ImageView[8][8]; //2D array holds the imageViews for the board
+    int clickCount = 0;
+    String firstClick;
+    String secondClick;
 
     /******************************
      * public CheckersGame()
@@ -35,6 +46,39 @@ public class CheckersGame extends Stage{
 	super();
 	init();
 	setScene(game);
+
+	/*
+	 * Implement the game
+	 * user first clicks image (piece) they want to move
+	 * user then click where they want to move the image (piece) too
+	 */
+	grid.addEventHandler(MouseEvent.MOUSE_CLICKED, e ->{
+		clickCount++; //keeps track
+		onClick(e);
+		System.out.println(clickCount); //prints the number of times the grid has been clicked so far
+		if(clickCount == 2){
+		    clickCount = 0;
+		    System.out.println("first click: " + firstClick + "\n" + "second click: " + secondClick); //prints the coordinates of the first and second click
+		}
+	    });
+    }
+    
+    /************************************
+     * public void onClick(MouseEvent event)
+     *
+     * This method will replace the image between imageViews
+     * The images that will be replaces are based on the coordinates
+     * the user gives from each mouse click 
+     *
+     * @param MouseEvent
+     * @returns void
+     ***********************************/
+    public void onClick(MouseEvent event){
+	int row = (int)Math.ceil(event.getY()/100) -1;
+	int col = (int)Math.ceil(event.getX()/100) -1;
+	if(clickCount == 1) firstClick = row + " " + col;
+	if(clickCount == 2) secondClick = row + " " + col;
+
     }
 
     /********************************
@@ -71,7 +115,7 @@ public class CheckersGame extends Stage{
 	grid.setGridLinesVisible(true);
 	int numCols = 8;
 	int numRows = 8;
-	ImageView[][] tiles = new ImageView[numRows][numCols]; //2D array holds the imageViews for the board
+	//	ImageView[][] tiles = new ImageView[numRows][numCols]; //2D array holds the imageViews for the board
 	ImageView tempTile;
 	boolean isRed = true;
 	for(int i = 0; i <numCols; i++){
@@ -112,7 +156,7 @@ public class CheckersGame extends Stage{
 		    }else{
 			tiles[x][y].setImage(blackTile); //sets tile to black
 		    }
-		    tiles[x][y].setImage(blackTile); //sets tile to black
+		    // tiles[x][y].setImage(blackTile); //sets tile to black
 		    tiles[x][y].setFitWidth(100);
 		    tiles[x][y].setFitHeight(100); 
 		    grid.add(tiles[x][y], y, x);
