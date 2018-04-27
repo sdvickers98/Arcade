@@ -6,6 +6,7 @@ import javafx.animation.Timeline;
 import javafx.concurrent.ScheduledService;
 import javafx.concurrent.Task;
 import javafx.event.*;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
@@ -16,6 +17,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.stage.Modality;
 import javafx.util.Duration;
 
 public class TetrisGame extends Stage{
@@ -31,12 +33,12 @@ public class TetrisGame extends Stage{
 
     private Timeline timeline;
     private GridPane grid;
-    private boolean isPlaying;
+    private boolean hasStarted, paused;
     private boolean[][] pieceTracker;
     private TetrisPiece[][] pieceGrid;
+    private TetrisPiece[] currentPieces;
     private int score, level;
     private EventHandler<ActionEvent> pieceMovement;
-    private ScheduledService<Void> newPiece;
     private Tetromino current;
 
     public TetrisGame(){	
@@ -49,30 +51,26 @@ public class TetrisGame extends Stage{
 	Button playButton = new Button("Play");
 	playButton.setMinWidth(75);
 	playButton.setOnAction(e -> {
-		if (true) timeline.play();
-		else{
-		if (!isPlaying) {
+		if (!hasStarted) {
 		    playButton.setText("Pause");
-		    isPlaying = true;
-
-		    newPiece.start();
+		    
+		    nextTetromino();
+		    hasStarted = true;
+		    paused = false;
+		    
+		    timeline.play();
   		} else {
 		    if (playButton.getText().equals("Pause")) {
 			playButton.setText("Resume");
+			paused = true;
 			timeline.pause();
 		    } else {
 			playButton.setText("Pause");
+			paused = false;
 			timeline.play();
 		    }
 		}
-		}
 	    });
-
-	//
-	 current = new Tetromino(Tetromino.Shape.I);
-	 current.setInitialGridPosition();
-	 addToGrid(current);
-	//
 
 	Button closeButton = new Button("Close");
 	closeButton.setMinWidth(75);
@@ -89,9 +87,8 @@ public class TetrisGame extends Stage{
 
     private void init(){
 	initTimeline();
-	initService();
 
-	isPlaying = false;
+	hasStarted = false;
 	score = 0;
 	level = 1;
 
@@ -114,20 +111,17 @@ public class TetrisGame extends Stage{
 	timeline = new Timeline();
 	
 	pieceMovement = event -> {
-	    TetrisPiece[] pieces = current.getPieces();
-
 	    if (moveIsValid(current, Direction.DOWN))  
 		move(current, Direction.DOWN); 
 	    // if the move is valid, the tetromino is shifted down by one 
 
 	    else {
-		for (TetrisPiece piece: pieces) {
+		for (TetrisPiece piece: currentPieces) {
 		    pieceTracker[piece.getRow()][piece.getCol()] = true;
 		    pieceGrid[piece.getRow()][piece.getCol()] = piece;
 		}
-		//newPiece.restart();
 
-		timeline.stop();
+		nextTetromino();
 	    }
 	};
 
@@ -135,36 +129,6 @@ public class TetrisGame extends Stage{
 	timeline.setCycleCount(Timeline.INDEFINITE);
 	timeline.getKeyFrames().add(keyframe);
     } // initTimeline
-
-    private void initService() {
-	newPiece = new ScheduledService<Void>() {
-	    public Task<Void> createTask() {
-		return new Task<Void>() {
-		    public Void call() {
-			int shapeSelect = rng.nextInt(7);
-			Tetromino.Shape shape;
-
-			if (shapeSelect == 0) { shape = Tetromino.Shape.I; }
-			else if (shapeSelect == 1) { shape = Tetromino.Shape.J; }
-			else if (shapeSelect == 2) { shape = Tetromino.Shape.L; }
-			else if (shapeSelect == 3) { shape = Tetromino.Shape.O; }
-			else if (shapeSelect == 4) { shape = Tetromino.Shape.S; }
-			else if (shapeSelect == 5) { shape = Tetromino.Shape.T; }
-			else { shape = Tetromino.Shape.Z; }
-
-			current = new Tetromino(shape);
-			current.setInitialGridPosition();
-			addToGrid(current);
-			timeline.play();
-
-			return null;
-		    }
-		};
-	    }
-	};
-
-	newPiece.setPeriod(Duration.INDEFINITE);
-    } // initService
 
     private boolean moveIsValid(Tetromino current, Direction dir) {
 	boolean isValid = true;
@@ -218,8 +182,47 @@ public class TetrisGame extends Stage{
     } // move
 
     private void checkClose() {
-	this.close();
-	// TODO implement
+	if (!paused) 
+	    timeline.pause();
+
+	Stage closeWindow = new Stage();
+	closeWindow.initModality(Modality.APPLICATION_MODAL);
+
+	VBox root = new VBox(20);
+	
+	Label closeLabel = new Label("Are you sure you want to close the game?");
+     	root.getChildren().add(closeLabel);
+	// creating a label asking the user if they are sure they want to stop playing
+
+	Button cancelButton = new Button("Cancel");
+	cancelButton.setOnAction(e -> {
+		closeWindow.close();
+		if (!paused)
+		    timeline.play();
+	    });
+	cancelButton.setMinWidth(75);
+	// creating a button to resume the game instead of closing
+
+	Button closeButton = new Button("Close");
+	closeButton.setOnAction(e -> {
+		closeWindow.close();
+		this.close();
+	    });
+	closeButton.setMinWidth(75);
+	// creating a button to close the game
+
+	HBox buttonBox = new HBox(20);
+	buttonBox.getChildren().addAll(cancelButton, closeButton);
+	buttonBox.setAlignment(Pos.CENTER);
+	// adding the buttons to an HBox
+	
+	root.getChildren().add(buttonBox);
+	root.setAlignment(Pos.CENTER);
+	root.setPadding(new Insets(10));
+
+	closeWindow.setScene(new Scene(root));
+	closeWindow.showAndWait();
+
     } // checkClose
 
     private void addToGrid(Tetromino current) {
@@ -227,5 +230,37 @@ public class TetrisGame extends Stage{
 
 	grid.getChildren().addAll(pieces[0], pieces[1], pieces[2], pieces[3]);
     } // addToGrid
+
+    private void nextTetromino() {
+	if (hasStarted)
+	    timeline.pause();
+	
+	int shapeSelect = rng.nextInt(7);
+	Tetromino.Shape shape;
+       	if (shapeSelect == 0) 
+	    shape = Tetromino.Shape.I; 
+	else if (shapeSelect == 1) 
+	    shape = Tetromino.Shape.J; 
+	else if (shapeSelect == 2) 
+	    shape = Tetromino.Shape.L; 
+	else if (shapeSelect == 3)
+	    shape = Tetromino.Shape.O; 
+	else if (shapeSelect == 4) 
+	    shape = Tetromino.Shape.S; 
+	else if (shapeSelect == 5) 
+	    shape = Tetromino.Shape.T; 
+	else 
+	    shape = Tetromino.Shape.Z; 
+	
+	Tetromino temp = new Tetromino(shape); 
+	currentPieces = temp.getPieces();
+	temp.setInitialGridPosition();
+	addToGrid(temp);
+	
+	current = temp;
+	
+	if (hasStarted) 
+	    timeline.play();
+    } // nextTetromino
 
 }

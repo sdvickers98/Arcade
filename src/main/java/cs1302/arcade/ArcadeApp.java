@@ -4,12 +4,15 @@ package cs1302.arcade;
 import java.util.Random;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.scene.control.Button;
 import javafx.stage.Modality;
 
@@ -32,10 +35,27 @@ public class ArcadeApp extends Application {
 	r.setY(50);                          // 50ps in the y direction (down)
 	group.getChildren().add(r);          // add to main container
 	
-	HBox homeScreen = new HBox();
+	HBox homeScreen = new HBox(20);
 	Button tetris = new Button("Tetris");
 	Button checkers = new Button("Checkers");
-	homeScreen.getChildren().addAll(tetris,checkers);
+
+	VBox tetrisBox = new VBox(20);
+	tetrisBox.setAlignment(Pos.CENTER);
+	ImageView tetrisPic = new ImageView("https://assets3.thrillist.com/v1/image/1258932/size/tl-horizontal_main.jpg");
+	tetrisPic.setSmooth(true);
+	tetrisPic.setFitWidth(300);
+	tetrisPic.setFitHeight(300);
+	tetrisBox.getChildren().addAll(tetris, tetrisPic);
+
+	VBox checkersBox = new VBox(20);
+	checkersBox.setAlignment(Pos.CENTER);
+	ImageView checkersPic = new ImageView("https://1001freedownloads.s3.amazonaws.com/vector/thumb/88538/1322756040.png");
+	checkersPic.setSmooth(true);
+	checkersPic.setFitWidth(300);
+	checkersPic.setFitHeight(300);
+	checkersBox.getChildren().addAll(checkers, checkersPic);
+	
+	homeScreen.getChildren().addAll(tetrisBox,checkersBox);
 
 
 	tetris.setOnAction(e -> {
@@ -70,7 +90,7 @@ public class ArcadeApp extends Application {
 		// TODO bounds checking
 	    });
 
-        Scene scene = new Scene(homeScreen, 640, 480);
+        Scene scene = new Scene(homeScreen);
         stage.setTitle("cs1302-arcade!");
         stage.setScene(scene);
 	stage.sizeToScene();
