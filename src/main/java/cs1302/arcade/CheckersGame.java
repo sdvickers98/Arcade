@@ -23,9 +23,9 @@ public class CheckersGame extends Stage{
     private Scene game = new Scene(border);
 
     //get images for the board
-    //  Image redTile = new Image("https://www.colorcombos.com/images/colors/FF0000.png");
+    
     Image redTile = new Image("file:src/main/resources/images/redTile.png");
-    //  Image blackTile = new Image("https://www.colorcombos.com/images/colors/000000.png");
+   
     Image blackTile = new Image("file:src/main/resources/images/blackTile.png");
     Image blackCrownPiece = new Image("file:src/main/resources/images/blackKing.png");
     Image blackPiece = new Image("file:src/main/resources/images/black.png");
@@ -33,8 +33,8 @@ public class CheckersGame extends Stage{
     Image redPiece = new Image("file:src/main/resources/images/red.png");
     ImageView[][] tiles = new ImageView[8][8]; //2D array holds the imageViews for the board
     int clickCount = 0;
-    String firstClick;
-    String secondClick;
+    int firstRow, secondRow, firstCol, secondCol;
+    
 
     /******************************
      * public CheckersGame()
@@ -46,7 +46,8 @@ public class CheckersGame extends Stage{
 	super();
 	init();
 	setScene(game);
-
+	setMaxHeight(800);
+	setMaxWidth(800);
 	/*
 	 * Implement the game
 	 * user first clicks image (piece) they want to move
@@ -58,7 +59,7 @@ public class CheckersGame extends Stage{
 		System.out.println(clickCount); //prints the number of times the grid has been clicked so far
 		if(clickCount == 2){
 		    clickCount = 0;
-		    System.out.println("first click: " + firstClick + "\n" + "second click: " + secondClick); //prints the coordinates of the first and second click
+		    //System.out.println("first click: " + firstClick + "\n" + "second click: " + secondClick); //prints the coordinates of the first and second click
 		}
 	    });
     }
@@ -76,8 +77,38 @@ public class CheckersGame extends Stage{
     public void onClick(MouseEvent event){
 	int row = (int)Math.ceil(event.getY()/100) -1;
 	int col = (int)Math.ceil(event.getX()/100) -1;
-	if(clickCount == 1) firstClick = row + " " + col;
-	if(clickCount == 2) secondClick = row + " " + col;
+	if(clickCount == 1){
+	    firstRow = row;
+	    firstCol = col;
+	    
+	}
+	if(clickCount == 2){
+	    secondRow = row;
+	    secondCol = col;
+
+
+	    int midRow = (firstRow + secondRow)/2;
+	    int midCol = (firstCol + secondCol)/2;
+  Image temp = tiles[midRow][midCol].getImage();
+ if(((temp == redPiece) || (temp ==blackPiece))&&(midRow != firstRow)) tiles[midRow][midCol].setImage(blackTile); 
+
+	    //switch the images
+	    temp = tiles[firstRow][firstCol].getImage();
+	    tiles[firstRow][firstCol].setImage(blackTile);
+	    
+	    if(temp == blackPiece) tiles[secondRow][secondCol].setImage(blackPiece); 
+	    if(temp == redPiece) tiles[secondRow][secondCol].setImage(redPiece);
+
+	    //take pieces out if needed
+
+	    //  temp = tiles[midRow][midCol].getImage();
+	    System.out.println(midRow+" "+midCol+" "+firstRow+ " "+firstCol+" "+ secondRow+ " " + secondCol);
+	    // if(((temp == redPiece) || (temp ==blackPiece))&&(midRow != firstRow)) tiles[midRow][midCol].setImage(blackTile); 
+	    
+	}
+
+
+
 
     }
 
