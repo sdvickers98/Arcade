@@ -3,7 +3,6 @@ package cs1302.arcade;
 import java.util.Random;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
-import javafx.concurrent.ScheduledService;
 import javafx.concurrent.Task;
 import javafx.event.*;
 import javafx.geometry.Insets;
@@ -11,6 +10,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.Button;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -179,6 +179,8 @@ public class TetrisGame extends Stage{
 		piece.setGridPosition(piece.getRow(), piece.getCol() - 1);
 	    }
 	}
+	
+	grid.requestFocus();
     } // move
 
     private void checkClose() {
@@ -256,10 +258,26 @@ public class TetrisGame extends Stage{
 	currentPieces = temp.getPieces();
 	temp.setInitialGridPosition();
 	addToGrid(temp);
-	
+       	
 	current = temp;
 	
-	if (hasStarted) 
+	grid.setOnKeyPressed(event -> {
+		if (event.getCode() == KeyCode.SPACE)
+		    current.rotate(pieceTracker);
+		else if (event.getCode() == KeyCode.LEFT) {
+		    if (moveIsValid(current, Direction.LEFT))
+			move(current, Direction.LEFT);
+		} else if (event.getCode() == KeyCode.RIGHT) {
+		    if (moveIsValid(current, Direction.RIGHT))
+			move(current, Direction.RIGHT);
+		} else if (event.getCode() == KeyCode.DOWN) {
+		    if (moveIsValid(current, Direction.DOWN))
+			move(current, Direction.DOWN);
+		} 
+	    });
+	grid.requestFocus();
+
+	if (hasStarted)
 	    timeline.play();
     } // nextTetromino
 
