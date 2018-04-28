@@ -34,6 +34,8 @@ public class CheckersGame extends Stage{
     ImageView[][] tiles = new ImageView[8][8]; //2D array holds the imageViews for the board
     int clickCount = 0;
     int firstRow, secondRow, firstCol, secondCol;
+    int redPiecesTaken = 0;
+    int blackPiecesTaken = 0;
     
 
     /******************************
@@ -45,6 +47,45 @@ public class CheckersGame extends Stage{
     public CheckersGame(){	
 	super();
 	init();
+	/*
+Label scoreLabel = new Label("Score: " + score);
+	Label levelLabel = new Label("Level: " + level);
+
+	Button playButton = new Button("Play");
+	playButton.setMinWidth(75);
+	playButton.setOnAction(e -> {
+		if (!hasStarted) {
+		    playButton.setText("Pause");
+		    
+		    nextTetromino();
+		    hasStarted = true;
+		    paused = false;
+		    
+		    timeline.play();
+  		} else {
+		    if (playButton.getText().equals("Pause")) {
+			playButton.setText("Resume");
+			paused = true;
+			timeline.pause();
+		    } else {
+			playButton.setText("Pause");
+			paused = false;
+			timeline.play();
+		    }
+		}
+	    });
+
+	Button closeButton = new Button("Close");
+	closeButton.setMinWidth(75);
+	closeButton.setOnAction(e -> checkClose());
+	
+	VBox sideMenu = new VBox(20, scoreLabel, levelLabel, playButton, closeButton);
+	sideMenu.setMinWidth(150);
+	sideMenu.setAlignment(Pos.CENTER);
+
+	HBox root = new HBox(sideMenu, grid);
+	Scene game = new Scene(root);
+*/
 	setScene(game);
 	setMaxHeight(800);
 	setMaxWidth(800);
@@ -89,26 +130,41 @@ public class CheckersGame extends Stage{
 
 	    int midRow = (firstRow + secondRow)/2;
 	    int midCol = (firstCol + secondCol)/2;
-  Image temp = tiles[midRow][midCol].getImage();
- if(((temp == redPiece) || (temp ==blackPiece))&&(midRow != firstRow)) tiles[midRow][midCol].setImage(blackTile); 
+	    Image temp = tiles[midRow][midCol].getImage();
+	    if(((temp == redPiece) || (temp ==blackPiece))&&(midRow != firstRow)){
+		tiles[midRow][midCol].setImage(blackTile); //changes the image if jumped
 
+		//keep track of stats: pieces taken and if there is a winner
+		if(temp == redPiece) redPiecesTaken++;
+		if(temp == blackPiece) blackPiecesTaken++;
+		System.out.println(redPiecesTaken + " " + blackPiecesTaken);
+		if((redPiecesTaken == 12)||(blackPiecesTaken == 12)){
+		    if(redPiecesTaken == 12) winner(0);
+		    if(blackPiecesTaken == 12) winner(1);
+		}
+	    }
+	    
 	    //switch the images
 	    temp = tiles[firstRow][firstCol].getImage();
 	    tiles[firstRow][firstCol].setImage(blackTile);
 	    
-	    if(temp == blackPiece) tiles[secondRow][secondCol].setImage(blackPiece); 
-	    if(temp == redPiece) tiles[secondRow][secondCol].setImage(redPiece);
+	    if(temp == blackPiece){
+		
+		if(secondRow == 0)tiles[secondRow][secondCol].setImage(blackCrownPiece);
+		else tiles[secondRow][secondCol].setImage(blackPiece);
+	    } 
+	    if(temp == redPiece){
+		if(secondRow == 7)tiles[secondRow][secondCol].setImage(redCrownPiece);
+		else tiles[secondRow][secondCol].setImage(redPiece);
+	    }
 
 	    //take pieces out if needed
 
 	    //  temp = tiles[midRow][midCol].getImage();
-	    System.out.println(midRow+" "+midCol+" "+firstRow+ " "+firstCol+" "+ secondRow+ " " + secondCol);
+	    //System.out.println(midRow+" "+midCol+" "+firstRow+ " "+firstCol+" "+ secondRow+ " " + secondCol);
 	    // if(((temp == redPiece) || (temp ==blackPiece))&&(midRow != firstRow)) tiles[midRow][midCol].setImage(blackTile); 
 	    
 	}
-
-
-
 
     }
 
@@ -197,9 +253,46 @@ public class CheckersGame extends Stage{
 	    isRed = !isRed; //so no tile are same up and down
 	}//for
 	border.setCenter(grid);
+    }
+
+    /*******************************
+     * public void winner(int i)
+     *
+     * Method to do things when the game is finished:
+     * -Displays which color wins
+     * -Saves stats and updates to scoreboard
+     * -Gives option to restart (make restart method)
+     * -Gives option to go back to main menu
+     * -Gives option to see the High Scores/scoreboard
+     * 
+     * @param int 
+     * @returns void
+     ********************************/
+    public void winner(int i){
+	if(i == 0) System.out.println("Congratulations Red! You have Won!!");
+	if(i == 1) System.out.println("Congratulations Black! You have Won!!");
+
+	restart();
+
 
 
     }
 
+    /***************************************
+     * public void restart()
+     *
+     * Restarts the game
+     * Resets the instance variables and calls init()
+     *
+     **************************************/
+    public void restart(){
+	
+       
+	redPiecesTaken = 0;
+	blackPiecesTaken = 0;
+
+	init();
+
+    }
 
 }
