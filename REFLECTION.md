@@ -17,3 +17,13 @@ Here is a sample entry (delete this line; also: feel free to copy/paste/modify):
 
 3. **PROB:** Nothing so far!
 
+## FRI 2018-04-27 @ 11:55 PM EST
+
+1. **DONE:** Set up tetris grid, tetromino creation, and key events. For checkers,
+   set up the board, pieces, and basic movements as well as captures.
+
+2. **TODO:** Continue working on the tetromino movement as well as row clearing in 
+   Tetris. In checkers, add the kings, dialog boxes, and displaying/saving scores.
+
+3. **PROB:** Tetrominos sometimes fall through each other.
+
