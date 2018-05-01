@@ -33,7 +33,8 @@ public class TetrisGame extends Stage{
 
     private Timeline timeline;
     private GridPane grid;
-    private boolean hasStarted, paused;
+    private HBox root;
+    private boolean hasStarted, paused, tracker;
     private boolean[][] pieceTracker;
     private TetrisPiece[][] pieceGrid;
     private TetrisPiece[] currentPieces;
@@ -80,7 +81,7 @@ public class TetrisGame extends Stage{
 	sideMenu.setMinWidth(150);
 	sideMenu.setAlignment(Pos.CENTER);
 
-	HBox root = new HBox(sideMenu, grid);
+	root = new HBox(sideMenu, grid);
 	Scene game = new Scene(root);
 	setScene(game);
     }
@@ -121,6 +122,7 @@ public class TetrisGame extends Stage{
 		    pieceGrid[piece.getRow()][piece.getCol()] = piece;
 		}
 
+		tracker = false;
 		nextTetromino();
 	    }
 	};
@@ -143,6 +145,7 @@ public class TetrisGame extends Stage{
 	    for (TetrisPiece piece: pieces) {
 		if (piece.getRow() == NUM_ROWS - 1) return false;
 		isValid = !pieceTracker[piece.getRow() + 1][piece.getCol()];
+		
 	    }
 	} else if (dir == Direction.RIGHT) {
 	    for (TetrisPiece piece: pieces) {
@@ -169,6 +172,8 @@ public class TetrisGame extends Stage{
 	} else if (dir == Direction.DOWN) {
 	    for (TetrisPiece piece: pieces) {
 		piece.setGridPosition(piece.getRow() + 1, piece.getCol());
+		if (piece.getRow() == 19) 
+		    tracker = true;
 	    }
 	} else if (dir == Direction.RIGHT) {
 	    for (TetrisPiece piece: pieces) {
@@ -261,9 +266,9 @@ public class TetrisGame extends Stage{
        	
 	current = temp;
 	
-	grid.setOnKeyPressed(event -> {
+	root.setOnKeyPressed(event -> {
 		if (event.getCode() == KeyCode.SPACE)
-		    current.rotate(pieceTracker);
+		    current.rotate(pieceTracker, tracker);
 		else if (event.getCode() == KeyCode.LEFT) {
 		    if (moveIsValid(current, Direction.LEFT))
 			move(current, Direction.LEFT);
@@ -275,7 +280,7 @@ public class TetrisGame extends Stage{
 			move(current, Direction.DOWN);
 		} 
 	    });
-	grid.requestFocus();
+	root.requestFocus();
 
 	if (hasStarted)
 	    timeline.play();

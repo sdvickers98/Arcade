@@ -108,7 +108,7 @@ public class Tetromino {
      * @param inTheWay a 2D boolean array that tracks the positions of other tetromino pieces on the grid
      * @return whether the rotation was successful or not
      */
-    public boolean rotate(boolean[][] inTheWay) {
+    public boolean rotate(boolean[][] inTheWay, boolean tracker) {
 	
 	if (shape == Shape.I) {
 	    if (pieces[0].getRow() == pieces[1].getRow()) {
@@ -116,18 +116,42 @@ public class Tetromino {
 		    inTheWay[pieces[2].getRow() -1][pieces[2].getCol() - 1] || inTheWay[pieces[3].getRow() - 2][pieces[3].getCol() - 2])
 		    return false;
 		else {
+		    if (tracker) {
+			inTheWay[pieces[0].getRow()][pieces[0].getCol()] = false;
+			inTheWay[pieces[2].getRow()][pieces[2].getCol()] = false;
+			inTheWay[pieces[3].getRow()][pieces[3].getCol()] = false;
+		    }
+
 		    pieces[0].setGridPosition(pieces[0].getRow() + 1, pieces[0].getCol() + 1);
 		    pieces[2].setGridPosition(pieces[2].getRow() - 1, pieces[2].getCol() - 1);
 		    pieces[3].setGridPosition(pieces[3].getRow() - 2, pieces[3].getCol() - 2);
+
+		    if (tracker) {
+			inTheWay[pieces[0].getRow()][pieces[0].getCol()] = true;
+			inTheWay[pieces[2].getRow()][pieces[2].getCol()] = true;
+			inTheWay[pieces[3].getRow()][pieces[3].getCol()] = true;		      
+		    }					    
 		}		    
 	    } else {
 		if (pieces[1].getCol() > 7 || pieces[1].getCol() < 1 || inTheWay[pieces[0].getRow() - 1][pieces[0].getCol() - 1] ||
 		    inTheWay[pieces[2].getRow() + 1][pieces[2].getCol() + 1] || inTheWay[pieces[3].getRow() + 2][pieces[3].getCol() + 2])
 		    return false;
 		else {
+		    if (tracker) {
+			inTheWay[pieces[0].getRow()][pieces[0].getCol()] = false;
+			inTheWay[pieces[2].getRow()][pieces[2].getCol()] = false;
+			inTheWay[pieces[3].getRow()][pieces[3].getCol()] = false;
+		    }
+
 		    pieces[0].setGridPosition(pieces[0].getRow() - 1, pieces[0].getCol() - 1);
 		    pieces[2].setGridPosition(pieces[2].getRow() + 1, pieces[2].getCol() + 1);
 		    pieces[3].setGridPosition(pieces[3].getRow() + 2, pieces[3].getCol() + 2);
+		    
+		    if (tracker) {
+			inTheWay[pieces[0].getRow()][pieces[0].getCol()] = true;
+			inTheWay[pieces[2].getRow()][pieces[2].getCol()] = true;
+			inTheWay[pieces[3].getRow()][pieces[3].getCol()] = true;		      
+		    }					    
 		} 
 	    }
      	} else if (shape == Shape.J) {
@@ -137,18 +161,42 @@ public class Tetromino {
 			inTheWay[pieces[1].getRow() - 1][pieces[1].getCol() + 1] || inTheWay[pieces[3].getRow() - 1][pieces[3].getCol() - 1])
 			return false;
 		    else {
+		    if (tracker) {
+			inTheWay[pieces[0].getRow()][pieces[0].getCol()] = false;
+			inTheWay[pieces[1].getRow()][pieces[1].getCol()] = false;
+			inTheWay[pieces[3].getRow()][pieces[3].getCol()] = false;
+		    }
+
 			pieces[0].setGridPosition(pieces[0].getRow() - 2, pieces[0].getCol() + 2);
 			pieces[1].setGridPosition(pieces[1].getRow() - 1, pieces[1].getCol() + 1);
 			pieces[3].setGridPosition(pieces[3].getRow() - 1, pieces[3].getCol() - 1);
+
+		    if (tracker) {
+			inTheWay[pieces[0].getRow()][pieces[0].getCol()] = true;
+			inTheWay[pieces[1].getRow()][pieces[1].getCol()] = true;
+			inTheWay[pieces[3].getRow()][pieces[3].getCol()] = true;		      
+		    }			
 		    }
 		} else {
 		    if (pieces[2].getRow() > 18 || pieces[2].getCol() < 2 || inTheWay[pieces[0].getRow() + 2][pieces[0].getCol() - 2] ||
 			inTheWay[pieces[1].getRow() + 1][pieces[1].getCol() - 1] || inTheWay[pieces[3].getRow() + 1][pieces[3].getCol() + 1])
 			return false;
 		    else {
+		    if (tracker) {
+			inTheWay[pieces[0].getRow()][pieces[0].getCol()] = false;
+			inTheWay[pieces[1].getRow()][pieces[1].getCol()] = false;
+			inTheWay[pieces[3].getRow()][pieces[3].getCol()] = false;
+		    }
+
 			pieces[0].setGridPosition(pieces[0].getRow() + 2, pieces[0].getCol() - 2);
 			pieces[1].setGridPosition(pieces[1].getRow() + 1, pieces[1].getCol() - 1);
 			pieces[3].setGridPosition(pieces[3].getRow() + 1, pieces[3].getCol() + 1);
+
+		    if (tracker) {
+			inTheWay[pieces[0].getRow()][pieces[0].getCol()] = true;
+			inTheWay[pieces[1].getRow()][pieces[1].getCol()] = true;
+			inTheWay[pieces[3].getRow()][pieces[3].getCol()] = true;		      
+		    }			
 		    }
 		}
 	    } else {
@@ -157,18 +205,42 @@ public class Tetromino {
 			inTheWay[pieces[1].getRow() + 1][pieces[1].getCol() + 1] || inTheWay[pieces[3].getRow() - 1][pieces[3].getCol() + 1])
 			return false;
 		    else {
+		    if (tracker) {
+			inTheWay[pieces[0].getRow()][pieces[0].getCol()] = false;
+			inTheWay[pieces[1].getRow()][pieces[1].getCol()] = false;
+			inTheWay[pieces[3].getRow()][pieces[3].getCol()] = false;
+		    }
+
 			pieces[0].setGridPosition(pieces[0].getRow() + 2, pieces[0].getCol() + 2);
 			pieces[1].setGridPosition(pieces[1].getRow() + 1, pieces[1].getCol() + 1);
 			pieces[3].setGridPosition(pieces[3].getRow() - 1, pieces[3].getCol() + 1);
+
+		    if (tracker) {
+			inTheWay[pieces[0].getRow()][pieces[0].getCol()] = true;
+			inTheWay[pieces[1].getRow()][pieces[1].getCol()] = true;
+			inTheWay[pieces[3].getRow()][pieces[3].getCol()] = true;		      
+		    }			
 		    }
 		} else {
 		    if (pieces[2].getRow() < 2 || pieces[2].getCol() < 1 || inTheWay[pieces[0].getRow() - 2][pieces[0].getCol() - 2] ||
 			inTheWay[pieces[1].getRow() - 1][pieces[1].getCol() - 1] || inTheWay[pieces[3].getRow() + 1][pieces[3].getCol() -1])
 			return false;
 		    else {
+		    if (tracker) {
+			inTheWay[pieces[0].getRow()][pieces[0].getCol()] = false;
+			inTheWay[pieces[1].getRow()][pieces[1].getCol()] = false;
+			inTheWay[pieces[3].getRow()][pieces[3].getCol()] = false;
+		    }
+
 			pieces[0].setGridPosition(pieces[0].getRow() - 2, pieces[0].getCol() - 2);
 			pieces[1].setGridPosition(pieces[1].getRow() - 1, pieces[1].getCol() - 1);
 			pieces[3].setGridPosition(pieces[3].getRow() + 1, pieces[3].getCol() - 1);
+
+		    if (tracker) {
+			inTheWay[pieces[0].getRow()][pieces[0].getCol()] = true;
+			inTheWay[pieces[1].getRow()][pieces[1].getCol()] = true;
+			inTheWay[pieces[3].getRow()][pieces[3].getCol()] = true;		      
+		    }			
 		    }
 		}
 	    }
@@ -179,18 +251,42 @@ public class Tetromino {
 			inTheWay[pieces[2].getRow() + 2][pieces[2].getCol() - 2] || inTheWay[pieces[3].getRow() - 1][pieces[3].getCol() - 1])
 			return false;
 		    else {
+		    if (tracker) {
+			inTheWay[pieces[1].getRow()][pieces[1].getCol()] = false;
+			inTheWay[pieces[2].getRow()][pieces[2].getCol()] = false;
+			inTheWay[pieces[3].getRow()][pieces[3].getCol()] = false;
+		    }
+
 			pieces[1].setGridPosition(pieces[1].getRow() + 1, pieces[1].getCol() - 1);
 			pieces[2].setGridPosition(pieces[2].getRow() + 2, pieces[2].getCol() - 2);
 			pieces[3].setGridPosition(pieces[3].getRow() - 1, pieces[3].getCol() - 1);
+
+		    if (tracker) {
+			inTheWay[pieces[2].getRow()][pieces[2].getCol()] = true;
+			inTheWay[pieces[1].getRow()][pieces[1].getCol()] = true;
+			inTheWay[pieces[3].getRow()][pieces[3].getCol()] = true;		      
+		    }			
 		    }
 		} else {
 		    if (pieces[0].getCol() > 7 || inTheWay[pieces[1].getRow() - 1][pieces[1].getCol() + 1] ||
 			inTheWay[pieces[2].getRow() - 2][pieces[2].getCol() + 2] || inTheWay[pieces[3].getRow() + 1][pieces[3].getCol() + 1])
 			return false;
 		    else {
+		    if (tracker) {
+			inTheWay[pieces[1].getRow()][pieces[1].getCol()] = false;
+			inTheWay[pieces[2].getRow()][pieces[2].getCol()] = false;
+			inTheWay[pieces[3].getRow()][pieces[3].getCol()] = false;
+		    }
+
 			pieces[1].setGridPosition(pieces[1].getRow() - 1, pieces[1].getCol() + 1);
 			pieces[2].setGridPosition(pieces[2].getRow() - 2, pieces[2].getCol() + 2);
 			pieces[3].setGridPosition(pieces[3].getRow() + 1, pieces[3].getCol() + 1);
+
+		    if (tracker) {
+			inTheWay[pieces[2].getRow()][pieces[2].getCol()] = true;
+			inTheWay[pieces[1].getRow()][pieces[1].getCol()] = true;
+			inTheWay[pieces[3].getRow()][pieces[3].getCol()] = true;		      
+		    }			
 		    }
 		}
 	    } else {
@@ -199,18 +295,42 @@ public class Tetromino {
 			inTheWay[pieces[2].getRow() - 2][pieces[2].getCol() - 2] || inTheWay[pieces[3].getRow() - 1][pieces[3].getCol() + 1])
 			return false;
 		    else {
+		    if (tracker) {
+			inTheWay[pieces[1].getRow()][pieces[1].getCol()] = false;
+			inTheWay[pieces[2].getRow()][pieces[2].getCol()] = false;
+			inTheWay[pieces[3].getRow()][pieces[3].getCol()] = false;
+		    }
+
 			pieces[1].setGridPosition(pieces[1].getRow() - 1, pieces[1].getCol() - 1);
 			pieces[2].setGridPosition(pieces[2].getRow() - 2, pieces[2].getCol() - 2);
 			pieces[3].setGridPosition(pieces[3].getRow() - 1, pieces[3].getCol() + 1);
+
+		    if (tracker) {
+			inTheWay[pieces[2].getRow()][pieces[2].getCol()] = true;
+			inTheWay[pieces[1].getRow()][pieces[1].getCol()] = true;
+			inTheWay[pieces[3].getRow()][pieces[3].getCol()] = true;		      
+		    }			
 		    }
 		} else {
 		    if (pieces[2].getRow() > 17 || inTheWay[pieces[1].getRow() + 1][pieces[1].getCol() + 1] ||
 			inTheWay[pieces[2].getRow() + 2][pieces[2].getCol() + 2] || inTheWay[pieces[3].getRow() + 1][pieces[3].getCol() -1])
 			return false;
 		    else {
+		    if (tracker) {
+			inTheWay[pieces[1].getRow()][pieces[1].getCol()] = false;
+			inTheWay[pieces[2].getRow()][pieces[2].getCol()] = false;
+			inTheWay[pieces[3].getRow()][pieces[3].getCol()] = false;
+		    }
+
 			pieces[1].setGridPosition(pieces[1].getRow() + 1, pieces[1].getCol() + 1);
 			pieces[2].setGridPosition(pieces[2].getRow() + 2, pieces[2].getCol() + 2);
 			pieces[3].setGridPosition(pieces[3].getRow() + 1, pieces[3].getCol() - 1);
+
+		    if (tracker) {
+			inTheWay[pieces[2].getRow()][pieces[2].getCol()] = true;
+			inTheWay[pieces[1].getRow()][pieces[1].getCol()] = true;
+			inTheWay[pieces[3].getRow()][pieces[3].getCol()] = true;		      
+		    }			
 		    }
 		}
 	    }
@@ -222,18 +342,42 @@ public class Tetromino {
 		    inTheWay[pieces[1].getRow() + 1][pieces[1].getCol() - 1] || inTheWay[pieces[3].getRow() + 1][pieces[3].getCol() + 1])
 		    return false;
 		else {
+		    if (tracker) {
+			inTheWay[pieces[0].getRow()][pieces[0].getCol()] = false;
+			inTheWay[pieces[1].getRow()][pieces[1].getCol()] = false;
+			inTheWay[pieces[3].getRow()][pieces[3].getCol()] = false;
+		    }
+
 		    pieces[0].setGridPosition(pieces[0].getRow(), pieces[0].getCol() - 2);
 		    pieces[1].setGridPosition(pieces[1].getRow() + 1, pieces[1].getCol() - 1);
 		    pieces[3].setGridPosition(pieces[3].getRow() + 1, pieces[3].getCol() + 1);
+
+		    if (tracker) {
+			inTheWay[pieces[0].getRow()][pieces[0].getCol()] = true;
+			inTheWay[pieces[1].getRow()][pieces[1].getCol()] = true;
+			inTheWay[pieces[3].getRow()][pieces[3].getCol()] = true;		      
+		    }
 		}		    
 	    } else {
 		if (pieces[2].getRow() > 18 || pieces[2].getRow() < 1 || inTheWay[pieces[0].getRow()][pieces[0].getCol() + 2] ||
 		    inTheWay[pieces[1].getRow() - 1][pieces[1].getCol() + 1] || inTheWay[pieces[3].getRow() - 1][pieces[3].getCol() - 1])
 		    return false;
 		else {
+		    if (tracker) {
+			inTheWay[pieces[0].getRow()][pieces[0].getCol()] = false;
+			inTheWay[pieces[1].getRow()][pieces[1].getCol()] = false;
+			inTheWay[pieces[3].getRow()][pieces[3].getCol()] = false;
+		    }
+
 		    pieces[0].setGridPosition(pieces[0].getRow(), pieces[0].getCol() + 2);
 		    pieces[1].setGridPosition(pieces[1].getRow() - 1, pieces[1].getCol() + 1);
 		    pieces[3].setGridPosition(pieces[3].getRow() - 1, pieces[3].getCol() - 1);
+
+		    if (tracker) {
+			inTheWay[pieces[0].getRow()][pieces[0].getCol()] = true;
+			inTheWay[pieces[1].getRow()][pieces[1].getCol()] = true;
+			inTheWay[pieces[3].getRow()][pieces[3].getCol()] = true;
+		    }
 		} 
 	    }
 	} else if (shape == Shape.T) {
@@ -243,18 +387,42 @@ public class Tetromino {
 			inTheWay[pieces[2].getRow() - 1][pieces[2].getCol() - 1] || inTheWay[pieces[3].getRow() - 1][pieces[3].getCol() + 1])
 			return false;
 		    else {
+		    if (tracker) {
+			inTheWay[pieces[0].getRow()][pieces[0].getCol()] = false;
+			inTheWay[pieces[2].getRow()][pieces[2].getCol()] = false;
+			inTheWay[pieces[3].getRow()][pieces[3].getCol()] = false;
+		    }
+
 			pieces[0].setGridPosition(pieces[0].getRow() + 1, pieces[0].getCol() + 1);
 			pieces[2].setGridPosition(pieces[2].getRow() - 1, pieces[2].getCol() - 1);
 			pieces[3].setGridPosition(pieces[3].getRow() - 1, pieces[3].getCol() + 1);
+
+		    if (tracker) {
+			inTheWay[pieces[0].getRow()][pieces[0].getCol()] = true;
+			inTheWay[pieces[2].getRow()][pieces[2].getCol()] = true;
+			inTheWay[pieces[3].getRow()][pieces[3].getCol()] = true;
+		    }
 		    }
 		} else {
 		    if (pieces[1].getRow() > 18 || inTheWay[pieces[0].getRow() - 1][pieces[0].getCol() - 1] ||
 			inTheWay[pieces[2].getRow() + 1][pieces[2].getCol() + 1] || inTheWay[pieces[3].getRow() + 1][pieces[3].getCol() - 1])
 			return false;
 		    else {
+		    if (tracker) {
+			inTheWay[pieces[0].getRow()][pieces[0].getCol()] = false;
+			inTheWay[pieces[2].getRow()][pieces[2].getCol()] = false;
+			inTheWay[pieces[3].getRow()][pieces[3].getCol()] = false;
+		    }
+
 			pieces[0].setGridPosition(pieces[0].getRow() - 1, pieces[0].getCol() - 1);
 			pieces[2].setGridPosition(pieces[2].getRow() + 1, pieces[2].getCol() + 1);
 			pieces[3].setGridPosition(pieces[3].getRow() + 1, pieces[3].getCol() - 1);
+
+		    if (tracker) {
+			inTheWay[pieces[0].getRow()][pieces[0].getCol()] = true;
+			inTheWay[pieces[2].getRow()][pieces[2].getCol()] = true;
+			inTheWay[pieces[3].getRow()][pieces[3].getCol()] = true;
+		    }
 		    }
 		}
 	    } else {
@@ -263,18 +431,42 @@ public class Tetromino {
 			inTheWay[pieces[2].getRow() + 1][pieces[2].getCol() - 1] || inTheWay[pieces[3].getRow() - 1][pieces[3].getCol() - 1])
 			return false;
 		    else {
+		    if (tracker) {
+			inTheWay[pieces[0].getRow()][pieces[0].getCol()] = false;
+			inTheWay[pieces[2].getRow()][pieces[2].getCol()] = false;
+			inTheWay[pieces[3].getRow()][pieces[3].getCol()] = false;
+		    }
+
 			pieces[0].setGridPosition(pieces[0].getRow() - 1, pieces[0].getCol() + 1);
 			pieces[2].setGridPosition(pieces[2].getRow() + 1, pieces[2].getCol() - 1);
 			pieces[3].setGridPosition(pieces[3].getRow() - 1, pieces[3].getCol() - 1);
+
+		    if (tracker) {
+			inTheWay[pieces[0].getRow()][pieces[0].getCol()] = true;
+			inTheWay[pieces[2].getRow()][pieces[2].getCol()] = true;
+			inTheWay[pieces[3].getRow()][pieces[3].getCol()] = true;
+		    }
 		    }
 		} else {
 		    if (pieces[1].getCol() > 8 || inTheWay[pieces[0].getRow() + 1][pieces[1].getCol() - 1] ||
 			inTheWay[pieces[2].getRow() - 1][pieces[2].getCol() + 1] || inTheWay[pieces[3].getRow() + 1][pieces[3].getCol() + 1])
 			return false;
 		    else {
+		    if (tracker) {
+			inTheWay[pieces[0].getRow()][pieces[0].getCol()] = false;
+			inTheWay[pieces[2].getRow()][pieces[2].getCol()] = false;
+			inTheWay[pieces[3].getRow()][pieces[3].getCol()] = false;
+		    }
+
 			pieces[0].setGridPosition(pieces[0].getRow() + 1, pieces[0].getCol() - 1);
 			pieces[2].setGridPosition(pieces[2].getRow() - 1, pieces[2].getCol() + 1);
 			pieces[3].setGridPosition(pieces[3].getRow() + 1, pieces[3].getCol() + 1);
+
+		    if (tracker) {
+			inTheWay[pieces[0].getRow()][pieces[0].getCol()] = true;
+			inTheWay[pieces[2].getRow()][pieces[2].getCol()] = true;
+			inTheWay[pieces[3].getRow()][pieces[3].getCol()] = true;
+		    }
 		    }
 		}
 	    } // end of T 
@@ -284,18 +476,42 @@ public class Tetromino {
 		    inTheWay[pieces[2].getRow() + 1][pieces[2].getCol() - 1] || inTheWay[pieces[3].getRow() + 2][pieces[3].getCol()])
 		    return false;
 		else {
+		    if (tracker) {
+			inTheWay[pieces[0].getRow()][pieces[0].getCol()] = false;
+			inTheWay[pieces[2].getRow()][pieces[2].getCol()] = false;
+			inTheWay[pieces[3].getRow()][pieces[3].getCol()] = false;
+		    }
+
 		    pieces[0].setGridPosition(pieces[0].getRow() - 1, pieces[0].getCol() - 1);
 		    pieces[2].setGridPosition(pieces[2].getRow() + 1, pieces[2].getCol() - 1);
 		    pieces[3].setGridPosition(pieces[3].getRow() + 2, pieces[3].getCol());
-		}		    
-	    } else {
+
+		    if (tracker) {
+			inTheWay[pieces[0].getRow()][pieces[0].getCol()] = true;
+			inTheWay[pieces[2].getRow()][pieces[2].getCol()] = true;
+			inTheWay[pieces[3].getRow()][pieces[3].getCol()] = true;
+		    }
+		}
+	     } else {
 		if (pieces[1].getRow() > 18 || pieces[1].getRow() < 1 || inTheWay[pieces[0].getRow() + 1][pieces[0].getCol() + 1] ||
 		    inTheWay[pieces[2].getRow() - 1][pieces[2].getCol() + 1] || inTheWay[pieces[3].getRow() - 2][pieces[3].getCol()])
 		    return false;
 		else {
+		    if (tracker) {
+			inTheWay[pieces[0].getRow()][pieces[0].getCol()] = false;
+			inTheWay[pieces[2].getRow()][pieces[2].getCol()] = false;
+			inTheWay[pieces[3].getRow()][pieces[3].getCol()] = false;
+		    }
+
 		    pieces[0].setGridPosition(pieces[0].getRow() + 1, pieces[0].getCol() + 1);
 		    pieces[2].setGridPosition(pieces[2].getRow() - 1, pieces[2].getCol() + 1);
 		    pieces[3].setGridPosition(pieces[3].getRow() - 2, pieces[3].getCol());
+
+		    if (tracker) {
+			inTheWay[pieces[0].getRow()][pieces[0].getCol()] = true;
+			inTheWay[pieces[2].getRow()][pieces[2].getCol()] = true;
+			inTheWay[pieces[3].getRow()][pieces[3].getCol()] = true;
+		    }
 		} 
 	    }
 	}
