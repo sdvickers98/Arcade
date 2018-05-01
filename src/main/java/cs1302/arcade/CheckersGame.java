@@ -5,21 +5,30 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.Parent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.Image;
 import javafx.scene.Node;
+import javafx.scene.control.Label;
+import javafx.scene.control.Button;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.Group;
+import javafx.scene.control.TextInputDialog;
+import javafx.geometry.Pos;
+import java.util.Optional;
 import java.lang.Math;
 
-
+//have message tell who winner is , or do a pop up and celebration animation, or dialog option to restart , close or view statistics
 public class CheckersGame extends Stage{
 
     private GridPane grid = new GridPane();
     private BorderPane border = new BorderPane(); //border pane to put grid in center and scoreboard on one of the sides
+    private HBox root = new HBox();
+    private VBox sideMenu = new VBox();
     private Scene game = new Scene(border);
 
     //get images for the board
@@ -36,6 +45,21 @@ public class CheckersGame extends Stage{
     int firstRow, secondRow, firstCol, secondCol;
     int redPiecesTaken = 0;
     int blackPiecesTaken = 0;
+
+    //set labels and buttons
+    Label redLabel = new Label("Red Pieces Taken: " + redPiecesTaken);
+    Label blackLabel = new Label("Black Pieces Taken " + blackPiecesTaken);
+    Label message = new Label("Somebody make a \nmove!");
+    Button closeButton = new Button("Close");    
+    Button reart = new Button("Start");
+
+    //for stats
+    String playerRedName = "Red";
+    String playerBlackName = "Black";
+    int playerRedWins = 0;
+    int playerBlackWins = 0;
+
+    boolean firstStart = true;
     
 
     /******************************
@@ -47,48 +71,52 @@ public class CheckersGame extends Stage{
     public CheckersGame(){	
 	super();
 	init();
-	/*
-Label scoreLabel = new Label("Score: " + score);
-	Label levelLabel = new Label("Level: " + level);
+	reart.setMinWidth(75);
+	reart.setOnAction(e -> {
+		if(firstStart){
+		System.out.println("It works");
+		//when start click open up dialog box to enter names of players 
+		//this will be used to track how many games won
+		//use search to find if name alreay exists in stats base
+		//add to stats if yes, make new player if not, max 10 players
+		TextInputDialog dialog = new TextInputDialog("Red");
+		dialog.setTitle("Enter Player Red Name");
+		dialog.setContentText("Please enter the name of player Red:");
+		Optional<String> result = dialog.showAndWait();
+		result.ifPresent(name -> playerRedName = name);
 
-	Button playButton = new Button("Play");
-	playButton.setMinWidth(75);
-	playButton.setOnAction(e -> {
-		if (!hasStarted) {
-		    playButton.setText("Pause");
-		    
-		    nextTetromino();
-		    hasStarted = true;
-		    paused = false;
-		    
-		    timeline.play();
-  		} else {
-		    if (playButton.getText().equals("Pause")) {
-			playButton.setText("Resume");
-			paused = true;
-			timeline.pause();
-		    } else {
-			playButton.setText("Pause");
-			paused = false;
-			timeline.play();
-		    }
+		TextInputDialog dialog2 = new TextInputDialog("Black");
+		dialog2.setTitle("Enter Player Black Name");
+		dialog2.setContentText("Please enter the name of player Black:");
+		result = dialog2.showAndWait();
+		result.ifPresent(name2 -> playerBlackName = name2);
+
+
+		System.out.println(playerBlackName + " " + playerRedName);
+
+		reart.setText("Restart");
+		firstStart=false;
+		}else{
+		    reart.setText("Start");
+		    restart();
+		    firstStart=true;
 		}
-	    });
 
-	Button closeButton = new Button("Close");
-	closeButton.setMinWidth(75);
-	closeButton.setOnAction(e -> checkClose());
+	    });
 	
-	VBox sideMenu = new VBox(20, scoreLabel, levelLabel, playButton, closeButton);
+	closeButton.setMinWidth(75);
+	//closeButton.setOnAction(e -> checkClose());
+	
+	sideMenu = new VBox(20, redLabel, blackLabel, reart, closeButton, message);
 	sideMenu.setMinWidth(150);
 	sideMenu.setAlignment(Pos.CENTER);
 
-	HBox root = new HBox(sideMenu, grid);
-	Scene game = new Scene(root);
-*/
+	root = new HBox(sideMenu, grid);
+	game = new Scene(root);
+
 	setScene(game);
-	setMaxHeight(800);
-	setMaxWidth(800);
+	setMaxHeight(1000);
+	setMaxWidth(950);
 	/*
 	 * Implement the game
 	 * user first clicks image (piece) they want to move
@@ -118,14 +146,29 @@ Label scoreLabel = new Label("Score: " + score);
     public void onClick(MouseEvent event){
 	int row = (int)Math.ceil(event.getY()/100) -1;
 	int col = (int)Math.ceil(event.getX()/100) -1;
+	Image currentImage;
 	if(clickCount == 1){
 	    firstRow = row;
 	    firstCol = col;
+	    message.setText("");
+	    currentImage  = tiles[row][col].getImage();
+
+	    if((currentImage==redTile)||currentImage==blackTile){
+		clickCount = 0;
+		message.setText("Invalid First Click");
+	    } 
 	    
 	}
 	if(clickCount == 2){
 	    secondRow = row;
 	    secondCol = col;
+	    message.setText("");
+	    currentImage = tiles[row][col].getImage();
+	    if((currentImage== redTile)||(currentImage== redPiece)||(currentImage==blackPiece)||(currentImage==redCrownPiece)||(currentImage == blackCrownPiece)){
+		message.setText("Invalid Second Click");
+		clickCount = 0;
+		//	break;
+	    }else{
 
 
 	    int midRow = (firstRow + secondRow)/2;
@@ -137,6 +180,8 @@ Label scoreLabel = new Label("Score: " + score);
 		//keep track of stats: pieces taken and if there is a winner
 		if(temp == redPiece) redPiecesTaken++;
 		if(temp == blackPiece) blackPiecesTaken++;
+		redLabel.setText("Red Pieces Taken: " + redPiecesTaken);
+		blackLabel.setText("Black Pieces Taken: " + blackPiecesTaken);
 		System.out.println(redPiecesTaken + " " + blackPiecesTaken);
 		if((redPiecesTaken == 12)||(blackPiecesTaken == 12)){
 		    if(redPiecesTaken == 12) winner(0);
@@ -157,7 +202,7 @@ Label scoreLabel = new Label("Score: " + score);
 		if(secondRow == 7)tiles[secondRow][secondCol].setImage(redCrownPiece);
 		else tiles[secondRow][secondCol].setImage(redPiece);
 	    }
-
+	    }
 	    //take pieces out if needed
 
 	    //  temp = tiles[midRow][midCol].getImage();
@@ -269,9 +314,15 @@ Label scoreLabel = new Label("Score: " + score);
      * @returns void
      ********************************/
     public void winner(int i){
-	if(i == 0) System.out.println("Congratulations Red! You have Won!!");
-	if(i == 1) System.out.println("Congratulations Black! You have Won!!");
-
+	if(i == 0) {
+	    System.out.println("Congratulations "+playerRedName +"! You have Won!!");
+	    playerRedWins++;
+	}
+	if(i == 1){
+	    System.out.println("Congratulations "+playerBlackName+"! You have Won!!");
+	    playerBlackWins++;
+	}
+	
 	restart();
 
 
@@ -287,11 +338,39 @@ Label scoreLabel = new Label("Score: " + score);
      **************************************/
     public void restart(){
 	
-       
+	boolean isRed = true;
 	redPiecesTaken = 0;
 	blackPiecesTaken = 0;
 
-	init();
+	//for loop to put imageView on the grid
+	for(int x = 0; x < 8; x++){
+	    for(int y = 0; y < 8; y++){
+		//if-else statement decides whether the piece will be red of black
+		if(isRed){
+		    tiles[x][y].setImage(redTile); //sets tile to red
+		    //  tiles[x][y].setFitWidth(100);
+		    //tiles[x][y].setFitHeight(100); 
+		    //grid.add(tiles[x][y] ,y,x);
+		    isRed = false; //so no side by side same colors
+		}
+		else{
+		    if(x < 3){
+			tiles[x][y].setImage(redPiece); //sets tile to a red piece
+		    }else if(x > 4){
+			tiles[x][y].setImage(blackPiece);
+		    }else{
+			tiles[x][y].setImage(blackTile); //sets tile to black
+		    }
+		    // tiles[x][y].setImage(blackTile); //sets tile to black
+		    //tiles[x][y].setFitWidth(100);
+		    //tiles[x][y].setFitHeight(100); 
+		    //grid.add(tiles[x][y], y, x);
+		    isRed = true;
+		}
+	    }//for
+	    isRed = !isRed; //so no tile are same up and down
+	}//for
+	//border.setCenter(grid);
 
     }
 
