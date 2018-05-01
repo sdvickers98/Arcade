@@ -38,16 +38,17 @@ public class TetrisGame extends Stage{
     private boolean[][] pieceTracker;
     private TetrisPiece[][] pieceGrid;
     private TetrisPiece[] currentPieces;
-    private int score, level;
+    private int score, level, multiplier;
     private EventHandler<ActionEvent> pieceMovement;
     private Tetromino current;
+    private Label scoreLabel, levelLabel;
 
     public TetrisGame(){	
 		super();
 		init();
 
-		Label scoreLabel = new Label("Score: " + score);
-		Label levelLabel = new Label("Level: " + level);
+		scoreLabel = new Label("Score: " + score);
+		levelLabel = new Label("Level: " + level);
 
 		Button playButton = new Button("Play");
 		playButton.setMinWidth(75);
@@ -72,6 +73,10 @@ public class TetrisGame extends Stage{
 				}
 			}
 			});
+		playButton.setOnKeyPressed(event -> {
+				root.requestFocus();
+				event.consume();
+			});
 
 		Button closeButton = new Button("Close");
 		closeButton.setMinWidth(75);
@@ -82,6 +87,24 @@ public class TetrisGame extends Stage{
 		sideMenu.setAlignment(Pos.CENTER);
 
 		root = new HBox(sideMenu, grid);
+		root.setOnKeyPressed(event -> {
+				if (!paused) {
+					if (event.getCode() == KeyCode.SPACE)
+						current.rotate(pieceTracker, tracker);
+					else if (event.getCode() == KeyCode.LEFT) {
+						if (moveIsValid(current, Direction.LEFT))
+							move(current, Direction.LEFT);
+					} else if (event.getCode() == KeyCode.RIGHT) {
+						if (moveIsValid(current, Direction.RIGHT))
+							move(current, Direction.RIGHT);
+					} else if (event.getCode() == KeyCode.DOWN) {
+						if (moveIsValid(current, Direction.DOWN))
+							move(current, Direction.DOWN);
+					}
+				}
+			});
+		root.requestFocus();
+
 		Scene game = new Scene(root);
 		setScene(game);
     } // start
@@ -91,6 +114,7 @@ public class TetrisGame extends Stage{
 
 		hasStarted = false;
 		score = 0;
+		multiplier = 1;
 		level = 1;
 
 		pieceTracker = new boolean[NUM_ROWS][NUM_COLS];
@@ -112,8 +136,9 @@ public class TetrisGame extends Stage{
 		timeline = new Timeline();
 
 		pieceMovement = event -> {
-			if (moveIsValid(current, Direction.DOWN))
-			    move(current, Direction.DOWN);
+			if (moveIsValid(current, Direction.DOWN)) {
+				move(current, Direction.DOWN);
+			}
 			// if the move is valid, the tetromino is shifted down by one
 
 			else {
@@ -122,6 +147,10 @@ public class TetrisGame extends Stage{
                     pieceGrid[piece.getRow()][piece.getCol()] = piece;
                 }
 
+                score += 20;
+				scoreLabel.setText("Score: " + score);
+
+                checkForRowClear();
                 tracker = false;
                 nextTetromino();
 			}
@@ -239,9 +268,9 @@ public class TetrisGame extends Stage{
 		TetrisPiece[] pieces = current.getPieces();
 
 		grid.getChildren().addAll(pieces[0], pieces[1], pieces[2], pieces[3]);
-		} // addToGrid
+    } // addToGrid
 
-		private void nextTetromino() {
+	private void nextTetromino() {
 		if (hasStarted)
 			timeline.pause();
 
@@ -269,26 +298,34 @@ public class TetrisGame extends Stage{
 
 		current = temp;
 
-		root.setOnKeyPressed(event -> {
-			if (!paused) {
-				if (event.getCode() == KeyCode.SPACE)
-					current.rotate(pieceTracker, tracker);
-				else if (event.getCode() == KeyCode.LEFT) {
-					if (moveIsValid(current, Direction.LEFT))
-						move(current, Direction.LEFT);
-				} else if (event.getCode() == KeyCode.RIGHT) {
-					if (moveIsValid(current, Direction.RIGHT))
-						move(current, Direction.RIGHT);
-				} else if (event.getCode() == KeyCode.DOWN) {
-					if (moveIsValid(current, Direction.DOWN))
-						move(current, Direction.DOWN);
-				}
-			}
-			});
-		root.requestFocus();
-
 		if (hasStarted)
 			timeline.play();
     } // nextTetromino
+
+	private void checkForRowClear() {
+		for (int i = NUM_ROWS -1; i > 1; i--) {
+			for (int j = 0; j < NUM_COLS; j++) {
+				if (!pieceTracker[i][j])
+					break;
+				else {
+					if (j == NUM_COLS - 1) {
+						clearRow(i);
+						i++;
+					}
+				}
+			}
+		}
+	} // checkForRowClear
+
+	private void clearRow(int row) {
+    	score += 400 * multiplier;
+    	multiplier++;
+		scoreLabel.setText("Score: " + score);
+
+    	for (int i = 0; i < NUM_COLS; i++) {
+    		pieceTracker[row][i] = false;
+    		grid.getChildren().remove(pieceGrid[row][i]);
+		}
+	} // clearRow
 
 }
