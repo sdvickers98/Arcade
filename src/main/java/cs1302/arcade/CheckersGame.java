@@ -20,6 +20,8 @@ import javafx.scene.Group;
 import javafx.scene.control.TextInputDialog;
 import javafx.geometry.Pos;
 import java.util.Optional;
+import javafx.stage.Modality;
+import javafx.geometry.Insets;
 import java.lang.Math;
 
 //have message tell who winner is , or do a pop up and celebration animation, or dialog option to restart , close or view statistics
@@ -105,7 +107,7 @@ public class CheckersGame extends Stage{
 	    });
 	
 	closeButton.setMinWidth(75);
-	//closeButton.setOnAction(e -> checkClose());
+	closeButton.setOnAction(e -> checkClose());
 	
 	sideMenu = new VBox(20, redLabel, blackLabel, reart, closeButton, message);
 	sideMenu.setMinWidth(150);
@@ -125,7 +127,7 @@ public class CheckersGame extends Stage{
 	grid.addEventHandler(MouseEvent.MOUSE_CLICKED, e ->{
 		clickCount++; //keeps track
 		onClick(e);
-		System.out.println(clickCount); //prints the number of times the grid has been clicked so far
+		//	System.out.println(clickCount); //prints the number of times the grid has been clicked so far
 		if(clickCount == 2){
 		    clickCount = 0;
 		    //System.out.println("first click: " + firstClick + "\n" + "second click: " + secondClick); //prints the coordinates of the first and second click
@@ -146,40 +148,49 @@ public class CheckersGame extends Stage{
     public void onClick(MouseEvent event){
 	int row = (int)Math.ceil(event.getY()/100) -1;
 	int col = (int)Math.ceil(event.getX()/100) -1;
-	Image currentImage;
-	if(clickCount == 1){
+	Image currentImage = tiles[row][col].getImage();
+	int check = isInvalid(row,col,currentImage);
+	message.setText("");
+
+	switch(check){
+
+	case 1:
+	    clickCount = 0;
+	    message.setText("Invalid First Click");
+	    break;
+
+	case 2:
+	    clickCount = 0;
+	    message.setText("Invalid Second Click");
+	    break;
+
+	case -1:
 	    firstRow = row;
 	    firstCol = col;
-	    message.setText("");
-	    currentImage  = tiles[row][col].getImage();
+	    break;
 
-	    if((currentImage==redTile)||currentImage==blackTile){
-		clickCount = 0;
-		message.setText("Invalid First Click");
-	    } 
-	    
-	}
-	if(clickCount == 2){
+	case -2:
 	    secondRow = row;
 	    secondCol = col;
-	    message.setText("");
-	    currentImage = tiles[row][col].getImage();
-	    if((currentImage== redTile)||(currentImage== redPiece)||(currentImage==blackPiece)||(currentImage==redCrownPiece)||(currentImage == blackCrownPiece)){
-		message.setText("Invalid Second Click");
-		clickCount = 0;
-		//	break;
-	    }else{
+	    break;
+	}
 
+	if(check == -2){
+	    currentImage = tiles[firstRow][firstCol].getImage();
+	    check = isInvalid(firstRow, firstCol, secondRow, secondCol, currentImage);
 
+	    System.out.println(check);
+	    if(check == -1){
 	    int midRow = (firstRow + secondRow)/2;
 	    int midCol = (firstCol + secondCol)/2;
 	    Image temp = tiles[midRow][midCol].getImage();
-	    if(((temp == redPiece) || (temp ==blackPiece))&&(midRow != firstRow)){
+	    //remember to change so error if jump over your own piece
+	    if(((((temp == redPiece)||(temp == redCrownPiece))&&(currentImage != redPiece)) || (((temp == blackPiece)||(temp == blackCrownPiece))&&(currentImage != blackPiece)))&&(midRow != firstRow)){
 		tiles[midRow][midCol].setImage(blackTile); //changes the image if jumped
 
 		//keep track of stats: pieces taken and if there is a winner
-		if(temp == redPiece) redPiecesTaken++;
-		if(temp == blackPiece) blackPiecesTaken++;
+		if((temp == redPiece)||(temp == redCrownPiece)) redPiecesTaken++;
+		if((temp == blackPiece)||(temp == blackCrownPiece)) blackPiecesTaken++;
 		redLabel.setText("Red Pieces Taken: " + redPiecesTaken);
 		blackLabel.setText("Black Pieces Taken: " + blackPiecesTaken);
 		System.out.println(redPiecesTaken + " " + blackPiecesTaken);
@@ -191,6 +202,7 @@ public class CheckersGame extends Stage{
 	    
 	    //switch the images
 	    temp = tiles[firstRow][firstCol].getImage();
+
 	    tiles[firstRow][firstCol].setImage(blackTile);
 	    
 	    if(temp == blackPiece){
@@ -202,16 +214,39 @@ public class CheckersGame extends Stage{
 		if(secondRow == 7)tiles[secondRow][secondCol].setImage(redCrownPiece);
 		else tiles[secondRow][secondCol].setImage(redPiece);
 	    }
-	    }
+	    if(temp == blackCrownPiece) tiles[secondRow][secondCol].setImage(blackCrownPiece);
+	    if(temp == redCrownPiece) tiles[secondRow][secondCol].setImage(redCrownPiece);
+	    }else{
+
+		switch(check){
+
+		case 1:
+		    message.setText("Red Piece can't \nmove here");
+		    break;
+
+		case 2:
+		    message.setText("Black Piece can't \nmove here");
+		    break;
+
+		case 3:
+		    message.setText("Red Crown Piece can't \nmove here");
+		    break;
+
+		case 4:
+		    message.setText("Black Crown Piece can't \nmove here");
+		    break;
+		} //switch
+	    }//else
+	}//if 
 	    //take pieces out if needed
 
 	    //  temp = tiles[midRow][midCol].getImage();
 	    //System.out.println(midRow+" "+midCol+" "+firstRow+ " "+firstCol+" "+ secondRow+ " " + secondCol);
 	    // if(((temp == redPiece) || (temp ==blackPiece))&&(midRow != firstRow)) tiles[midRow][midCol].setImage(blackTile); 
 	    
-	}
+    }//onClick
 
-    }
+
 
     /********************************
      * public GridPane getGrid()
@@ -374,4 +409,115 @@ public class CheckersGame extends Stage{
 
     }
 
+    public void checkClose() {
+	Stage closeWindow = new Stage();
+	closeWindow.initModality(Modality.APPLICATION_MODAL);
+
+	VBox root = new VBox(20);
+	
+	Label closeLabel = new Label("Are you sure you want to close the game?");
+     	root.getChildren().add(closeLabel);
+	// creating a label asking the user if they are sure they want to stop playing
+
+	Button cancelButton = new Button("Cancel");
+	cancelButton.setOnAction(e -> {
+		closeWindow.close();
+	    });
+	cancelButton.setMinWidth(75);
+	// creating a button to resume the game instead of closing
+
+	Button closeButton = new Button("Close");
+	closeButton.setOnAction(e -> {
+		closeWindow.close();
+		this.close();
+	    });
+	closeButton.setMinWidth(75);
+	// creating a button to close the game
+
+	HBox buttonBox = new HBox(20);
+	buttonBox.getChildren().addAll(cancelButton, closeButton);
+	buttonBox.setAlignment(Pos.CENTER);
+	// adding the buttons to an HBox
+	
+	root.getChildren().add(buttonBox);
+	root.setAlignment(Pos.CENTER);
+	root.setPadding(new Insets(10));
+
+	closeWindow.setScene(new Scene(root));
+	closeWindow.showAndWait();
+
+    }
+
+    /****************************
+     * public int isInvalid(int row, int col, Image currentImage)
+     *
+     * This method will check for invalid moves.
+     * Will return specified int values that will be mapped to 
+     * a certain invalid warning
+     *
+     * @param int, int, Image
+     * @returns int
+     *****************************/
+
+    public int isInvalid(int row, int col, Image currentImage){
+
+	if(clickCount == 1){
+	    if((currentImage==redTile)||currentImage==blackTile){
+		clickCount = 0;
+		return 1;
+	    }
+	    return -1;
+	}else{
+	    if(currentImage != blackTile){
+		clickCount = 0;
+		return 2;
+		
+	    }
+	    return -2;
+	}	
+    }
+
+    /************************************
+     * public int isInvalid(int firstRow, int firstCol, int secondRow, int secondCol, Image currentImage)
+     *
+     * This method checks if the space where the user wants to move is a valid move.
+     * Returns an int that is mapped to specific definition to decide what to do.
+     *
+     * @param int, int, int, int, Image
+     * @returns int
+     ************************************/
+
+    public int isInvalid(int firstRow, int firstCol, int secondRow, int secondCol, Image currentImage){
+	
+	if(currentImage == redPiece){
+
+	    if(firstRow == secondRow) return 1;
+	    if((firstRow + 1 != secondRow)&&(firstRow + 2 != secondRow)) return 1;
+
+
+
+	}else if(currentImage == blackPiece){
+	    
+	    if(firstRow == secondRow) return 2;
+	    if((firstRow -1 != secondRow)&&(firstRow - 2 != secondRow)) return 2;
+
+
+	}else if(currentImage == redCrownPiece){
+
+	    //	    if(((firstRow + 1 == secondRow)||(firstRow - 1 == secondRow))&&((firstCol -1 == secondCol)||(firstCol + 1 == secondCol))) return 3;
+
+	    if(firstRow == secondRow) return 3;
+	    if((firstRow + 1 != secondRow)&&(firstRow + 2 != secondRow)) return 3;
+	    if((firstRow -1 != secondRow)&&(firstRow - 2 != secondRow)) return 3;
+
+
+	}else if(currentImage == blackCrownPiece){
+
+	    // if(((firstRow + 1 == secondRow)||(firstRow - 1 == secondRow))&&((firstCol -1 == secondCol)||(firstCol + 1 == secondCol))) return 4;
+	    if(firstRow == secondRow) return 4;
+	    if(((firstRow + 1 != secondRow)&&(firstRow + 2 != secondRow))&&((firstRow -1 != secondRow)&&(firstRow - 2 != secondRow))) return 4;
+
+	}
+	return -1;
+    }//isInvalid
 }
