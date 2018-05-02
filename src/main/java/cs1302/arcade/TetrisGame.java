@@ -31,7 +31,7 @@ public class TetrisGame extends Stage{
     private final int CELL_SIZE = 30;
     private final int NUM_COLS = 10;
     private final int NUM_ROWS = 20;
-    private final int MAX_LEVEL = 8;
+    private final double MAX_LEVEL = 8.0;
 
     private enum Direction {
 		UP, DOWN, LEFT, RIGHT
@@ -474,14 +474,9 @@ public class TetrisGame extends Stage{
     	levelLabel.setText("Level: " + level);
     	timeline.pause();
 
-    	double cycleLength = (MAX_LEVEL - level +1) / MAX_LEVEL;
-
-		KeyFrame keyframe = new KeyFrame(Duration.seconds(cycleLength), pieceMovement);
-		timeline.getKeyFrames().clear();
-		timeline.getKeyFrames().add(keyframe);
-		timeline.setCycleCount(Timeline.INDEFINITE);
-		timeline.play();
-		// creates a new keyframe with a shorter duration
+    	double rate = (double) MAX_LEVEL / (MAX_LEVEL - level + 1);
+    	timeline.setRate(rate);
+		// speeds up the falling animation
 	} // increaseLevel
 
 	/**
