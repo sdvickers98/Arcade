@@ -100,6 +100,7 @@ public class CheckersGame extends Stage{
 		firstStart=false;
 		}else{
 		    reart.setText("Start");
+
 		    restart();
 		    firstStart=true;
 		}
@@ -184,6 +185,7 @@ public class CheckersGame extends Stage{
 	    int midRow = (firstRow + secondRow)/2;
 	    int midCol = (firstCol + secondCol)/2;
 	    Image temp = tiles[midRow][midCol].getImage();
+	    boolean change = true;
 	    //remember to change so error if jump over your own piece
 	    if(((((temp == redPiece)||(temp == redCrownPiece))&&(currentImage != redPiece)) || (((temp == blackPiece)||(temp == blackCrownPiece))&&(currentImage != blackPiece)))&&(midRow != firstRow)){
 		tiles[midRow][midCol].setImage(blackTile); //changes the image if jumped
@@ -193,29 +195,59 @@ public class CheckersGame extends Stage{
 		if((temp == blackPiece)||(temp == blackCrownPiece)) blackPiecesTaken++;
 		redLabel.setText("Red Pieces Taken: " + redPiecesTaken);
 		blackLabel.setText("Black Pieces Taken: " + blackPiecesTaken);
-		System.out.println(redPiecesTaken + " " + blackPiecesTaken);
+		//System.out.println(redPiecesTaken + " " + blackPiecesTaken);
 		if((redPiecesTaken == 12)||(blackPiecesTaken == 12)){
 		    if(redPiecesTaken == 12) winner(0);
 		    if(blackPiecesTaken == 12) winner(1);
 		}
+		
 	    }
-	    
+
+
+	    if((firstRow +2 == secondRow)||(firstRow -2 == secondRow)){
+		message.setText("");
+		if((temp==redPiece)&&((currentImage==redPiece)||(currentImage==redCrownPiece))){
+		    message.setText("Cant jump over\n same piece");
+		    change = false;
+		}
+		if((temp==blackPiece)&&((currentImage==blackPiece)||(currentImage==blackCrownPiece))){
+		    message.setText("Cant jump over\n same piece");
+		    change = false;
+		}
+		if((temp==redCrownPiece)&&((currentImage==redPiece)||(currentImage==redCrownPiece))){
+		    message.setText("Cant jump over\n same piece");
+		    change = false;
+		}
+		if((temp==blackCrownPiece)&&((currentImage==blackPiece)||(currentImage==blackCrownPiece))){
+		    message.setText("Cant jump over\n same piece");
+		    change = false;
+		}
+	    }
+	    if(change){
 	    //switch the images
 	    temp = tiles[firstRow][firstCol].getImage();
 
 	    tiles[firstRow][firstCol].setImage(blackTile);
 	    
 	    if(temp == blackPiece){
-		
+		message.setText(playerBlackName + " \nmoved last");
 		if(secondRow == 0)tiles[secondRow][secondCol].setImage(blackCrownPiece);
 		else tiles[secondRow][secondCol].setImage(blackPiece);
 	    } 
 	    if(temp == redPiece){
+		message.setText(playerRedName + " \nmoved last");
 		if(secondRow == 7)tiles[secondRow][secondCol].setImage(redCrownPiece);
 		else tiles[secondRow][secondCol].setImage(redPiece);
 	    }
-	    if(temp == blackCrownPiece) tiles[secondRow][secondCol].setImage(blackCrownPiece);
-	    if(temp == redCrownPiece) tiles[secondRow][secondCol].setImage(redCrownPiece);
+	    if(temp == blackCrownPiece){
+		tiles[secondRow][secondCol].setImage(blackCrownPiece);
+		message.setText(playerBlackName + " \nmoved last");
+	    }	
+	    if(temp == redCrownPiece){
+		tiles[secondRow][secondCol].setImage(redCrownPiece);
+		message.setText(playerRedName + " \nmoved last");
+	    }
+	    }//else
 	    }else{
 
 		switch(check){
@@ -229,11 +261,11 @@ public class CheckersGame extends Stage{
 		    break;
 
 		case 3:
-		    message.setText("Red Crown Piece can't \nmove here");
+		    message.setText("Red Crown Piece \ncan't move here");
 		    break;
 
 		case 4:
-		    message.setText("Black Crown Piece can't \nmove here");
+		    message.setText("Black Crown Piece \ncan't move here");
 		    break;
 		} //switch
 	    }//else
@@ -243,7 +275,7 @@ public class CheckersGame extends Stage{
 	    //  temp = tiles[midRow][midCol].getImage();
 	    //System.out.println(midRow+" "+midCol+" "+firstRow+ " "+firstCol+" "+ secondRow+ " " + secondCol);
 	    // if(((temp == redPiece) || (temp ==blackPiece))&&(midRow != firstRow)) tiles[midRow][midCol].setImage(blackTile); 
-	    
+	
     }//onClick
 
 
@@ -349,19 +381,19 @@ public class CheckersGame extends Stage{
      * @returns void
      ********************************/
     public void winner(int i){
-	if(i == 0) {
+	if(i == 1) {
 	    System.out.println("Congratulations "+playerRedName +"! You have Won!!");
+	    winnerScreen(playerRedName);
 	    playerRedWins++;
 	}
-	if(i == 1){
+	if(i == 0){
 	    System.out.println("Congratulations "+playerBlackName+"! You have Won!!");
+	    winnerScreen(playerBlackName);
 	    playerBlackWins++;
 	}
 	
 	restart();
-
-
-
+       
     }
 
     /***************************************
@@ -376,6 +408,15 @@ public class CheckersGame extends Stage{
 	boolean isRed = true;
 	redPiecesTaken = 0;
 	blackPiecesTaken = 0;
+	redLabel.setText("Red Pieces Taken: " + redPiecesTaken);
+	blackLabel.setText("Black Pieces Taken: " + blackPiecesTaken);
+
+	for(int x = 0; x < 8; x++){
+	    for(int y = 0; y < 8; y++){
+		tiles[x][y].setImage(redTile);
+	    }
+	}
+
 
 	//for loop to put imageView on the grid
 	for(int x = 0; x < 8; x++){
@@ -493,31 +534,84 @@ public class CheckersGame extends Stage{
 
 	    if(firstRow == secondRow) return 1;
 	    if((firstRow + 1 != secondRow)&&(firstRow + 2 != secondRow)) return 1;
-
+	    if(firstCol == secondCol) return 1;
 
 
 	}else if(currentImage == blackPiece){
 	    
 	    if(firstRow == secondRow) return 2;
 	    if((firstRow -1 != secondRow)&&(firstRow - 2 != secondRow)) return 2;
-
+	    if(firstCol == secondCol)return 2;
 
 	}else if(currentImage == redCrownPiece){
 
 	    //	    if(((firstRow + 1 == secondRow)||(firstRow - 1 == secondRow))&&((firstCol -1 == secondCol)||(firstCol + 1 == secondCol))) return 3;
 
 	    if(firstRow == secondRow) return 3;
-	    if((firstRow + 1 != secondRow)&&(firstRow + 2 != secondRow)) return 3;
-	    if((firstRow -1 != secondRow)&&(firstRow - 2 != secondRow)) return 3;
-
+	    //if((firstRow + 1 != secondRow)&&(firstRow + 2 != secondRow)) return 3;
+	    //if((firstRow -1 != secondRow)&&(firstRow - 2 != secondRow)) return 3;
+	    if(((firstRow + 1 != secondRow)&&(firstRow + 2 != secondRow))&&((firstRow -1 != secondRow)&&(firstRow - 2 != secondRow))) return 4;
+	    if(firstCol== secondCol)return 3;
 
 	}else if(currentImage == blackCrownPiece){
 
 	    // if(((firstRow + 1 == secondRow)||(firstRow - 1 == secondRow))&&((firstCol -1 == secondCol)||(firstCol + 1 == secondCol))) return 4;
 	    if(firstRow == secondRow) return 4;
 	    if(((firstRow + 1 != secondRow)&&(firstRow + 2 != secondRow))&&((firstRow -1 != secondRow)&&(firstRow - 2 != secondRow))) return 4;
-
+	    if(firstCol == secondCol) return 4;
 	}
 	return -1;
     }//isInvalid
+
+    /***************************************
+     * public void winnerScreen(String)
+     *
+     * Shows a different stage displaying the winner
+     * Player can choose to close or replay the game
+     *
+     * @param String
+     * @returns void
+     **************************************/
+    public void winnerScreen(String winner){
+
+	Stage winnerScreen = new Stage();
+	winnerScreen.initModality(Modality.APPLICATION_MODAL);
+
+	VBox root = new VBox(20);
+	
+	Label congrats = new Label("Congratulations " +winner+ "! You won the Game!!");
+     	root.getChildren().add(congrats);
+	// creating a label asking the user if they are sure they want to stop playing
+
+	Button replayButton = new Button("Play Again?");
+	replayButton.setOnAction(e -> {
+		winnerScreen.close();
+		restart();
+	    });
+	replayButton.setMinWidth(75);
+	// creating a button to resume the game instead of closing
+
+	Button closeButton = new Button("Close");
+	closeButton.setOnAction(e -> {
+		winnerScreen.close();
+		this.close();
+	    });
+	closeButton.setMinWidth(75);
+	// creating a button to close the game
+
+	HBox buttonBox = new HBox(20);
+	buttonBox.getChildren().addAll(replayButton, closeButton);
+	buttonBox.setAlignment(Pos.CENTER);
+	// adding the buttons to an HBox
+	
+	root.getChildren().add(buttonBox);
+	root.setAlignment(Pos.CENTER);
+	root.setPadding(new Insets(10));
+
+	winnerScreen.setScene(new Scene(root));
+	winnerScreen.showAndWait();
+
+
+
+    }
 }
