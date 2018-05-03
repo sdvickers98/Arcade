@@ -76,11 +76,7 @@ public class CheckersGame extends Stage{
 	reart.setMinWidth(75);
 	reart.setOnAction(e -> {
 		if(firstStart){
-		System.out.println("It works");
-		//when start click open up dialog box to enter names of players 
-		//this will be used to track how many games won
-		//use search to find if name alreay exists in stats base
-		//add to stats if yes, make new player if not, max 10 players
+		    
 		TextInputDialog dialog = new TextInputDialog("Red");
 		dialog.setTitle("Enter Player Red Name");
 		dialog.setContentText("Please enter the name of player Red:");
@@ -92,10 +88,6 @@ public class CheckersGame extends Stage{
 		dialog2.setContentText("Please enter the name of player Black:");
 		result = dialog2.showAndWait();
 		result.ifPresent(name2 -> playerBlackName = name2);
-
-
-		System.out.println(playerBlackName + " " + playerRedName);
-
 		reart.setText("Restart");
 		firstStart=false;
 		}else{
@@ -104,7 +96,6 @@ public class CheckersGame extends Stage{
 		    restart();
 		    firstStart=true;
 		}
-
 	    });
 	
 	closeButton.setMinWidth(75);
@@ -128,10 +119,10 @@ public class CheckersGame extends Stage{
 	grid.addEventHandler(MouseEvent.MOUSE_CLICKED, e ->{
 		clickCount++; //keeps track
 		onClick(e);
-		//	System.out.println(clickCount); //prints the number of times the grid has been clicked so far
+		
 		if(clickCount == 2){
 		    clickCount = 0;
-		    //System.out.println("first click: " + firstClick + "\n" + "second click: " + secondClick); //prints the coordinates of the first and second click
+		    
 		}
 	    });
     }
@@ -180,7 +171,6 @@ public class CheckersGame extends Stage{
 	    currentImage = tiles[firstRow][firstCol].getImage();
 	    check = isInvalid(firstRow, firstCol, secondRow, secondCol, currentImage);
 
-	    System.out.println(check);
 	    if(check == -1){
 	    int midRow = (firstRow + secondRow)/2;
 	    int midCol = (firstCol + secondCol)/2;
@@ -189,21 +179,18 @@ public class CheckersGame extends Stage{
 	    //remember to change so error if jump over your own piece
 	    if(((((temp == redPiece)||(temp == redCrownPiece))&&(currentImage != redPiece)) || (((temp == blackPiece)||(temp == blackCrownPiece))&&(currentImage != blackPiece)))&&(midRow != firstRow)){
 		tiles[midRow][midCol].setImage(blackTile); //changes the image if jumped
-
+		
 		//keep track of stats: pieces taken and if there is a winner
 		if((temp == redPiece)||(temp == redCrownPiece)) redPiecesTaken++;
 		if((temp == blackPiece)||(temp == blackCrownPiece)) blackPiecesTaken++;
 		redLabel.setText("Red Pieces Taken: " + redPiecesTaken);
 		blackLabel.setText("Black Pieces Taken: " + blackPiecesTaken);
-		//System.out.println(redPiecesTaken + " " + blackPiecesTaken);
 		if((redPiecesTaken == 12)||(blackPiecesTaken == 12)){
 		    if(redPiecesTaken == 12) winner(0);
 		    if(blackPiecesTaken == 12) winner(1);
-		}
-		
+		}		
 	    }
-
-
+	    
 	    if((firstRow +2 == secondRow)||(firstRow -2 == secondRow)){
 		message.setText("");
 		if((temp==redPiece)&&((currentImage==redPiece)||(currentImage==redCrownPiece))){
@@ -224,62 +211,53 @@ public class CheckersGame extends Stage{
 		}
 	    }
 	    if(change){
-	    //switch the images
-	    temp = tiles[firstRow][firstCol].getImage();
-
-	    tiles[firstRow][firstCol].setImage(blackTile);
-	    
-	    if(temp == blackPiece){
-		message.setText(playerBlackName + " \nmoved last");
-		if(secondRow == 0)tiles[secondRow][secondCol].setImage(blackCrownPiece);
-		else tiles[secondRow][secondCol].setImage(blackPiece);
-	    } 
-	    if(temp == redPiece){
-		message.setText(playerRedName + " \nmoved last");
-		if(secondRow == 7)tiles[secondRow][secondCol].setImage(redCrownPiece);
-		else tiles[secondRow][secondCol].setImage(redPiece);
-	    }
-	    if(temp == blackCrownPiece){
-		tiles[secondRow][secondCol].setImage(blackCrownPiece);
-		message.setText(playerBlackName + " \nmoved last");
-	    }	
-	    if(temp == redCrownPiece){
-		tiles[secondRow][secondCol].setImage(redCrownPiece);
-		message.setText(playerRedName + " \nmoved last");
-	    }
+		//switch the images
+		temp = tiles[firstRow][firstCol].getImage();
+		tiles[firstRow][firstCol].setImage(blackTile);
+		
+		if(temp == blackPiece){
+		    message.setText(playerBlackName + " \nmoved last");
+		    if(secondRow == 0)tiles[secondRow][secondCol].setImage(blackCrownPiece);
+		    else tiles[secondRow][secondCol].setImage(blackPiece);
+		} 
+		if(temp == redPiece){
+		    message.setText(playerRedName + " \nmoved last");
+		    if(secondRow == 7)tiles[secondRow][secondCol].setImage(redCrownPiece);
+		    else tiles[secondRow][secondCol].setImage(redPiece);
+		}
+		if(temp == blackCrownPiece){
+		    tiles[secondRow][secondCol].setImage(blackCrownPiece);
+		    message.setText(playerBlackName + " \nmoved last");
+		}	
+		if(temp == redCrownPiece){
+		    tiles[secondRow][secondCol].setImage(redCrownPiece);
+		    message.setText(playerRedName + " \nmoved last");
+		}
 	    }//else
 	    }else{
-
+		
 		switch(check){
-
+		    
 		case 1:
 		    message.setText("Red Piece can't \nmove here");
 		    break;
-
+		    
 		case 2:
 		    message.setText("Black Piece can't \nmove here");
 		    break;
-
+		    
 		case 3:
 		    message.setText("Red Crown Piece \ncan't move here");
 		    break;
-
+		    
 		case 4:
 		    message.setText("Black Crown Piece \ncan't move here");
 		    break;
 		} //switch
 	    }//else
 	}//if 
-	    //take pieces out if needed
-
-	    //  temp = tiles[midRow][midCol].getImage();
-	    //System.out.println(midRow+" "+midCol+" "+firstRow+ " "+firstCol+" "+ secondRow+ " " + secondCol);
-	    // if(((temp == redPiece) || (temp ==blackPiece))&&(midRow != firstRow)) tiles[midRow][midCol].setImage(blackTile); 
-	
     }//onClick
-
-
-
+    
     /********************************
      * public GridPane getGrid()
      *
@@ -311,10 +289,10 @@ public class CheckersGame extends Stage{
      * @returns void*
      **************************************/
     public void init(){
+	//make the board
 	grid.setGridLinesVisible(true);
 	int numCols = 8;
 	int numRows = 8;
-	//	ImageView[][] tiles = new ImageView[numRows][numCols]; //2D array holds the imageViews for the board
 	ImageView tempTile;
 	boolean isRed = true;
 	for(int i = 0; i <numCols; i++){
@@ -327,7 +305,7 @@ public class CheckersGame extends Stage{
 	    rowConst.setPercentHeight(100.0/numRows);
 	    grid.getRowConstraints().add(rowConst);
 	}//for
-
+	
 	//for loop to make a 2D array of imageViews that is identical to the 2D grid 
 	for(int x = 0; x < numRows; x++){
 	    for(int y = 0; y < numCols; y++){
@@ -335,7 +313,7 @@ public class CheckersGame extends Stage{
 		tiles[x][y] = tempTile;
 	    }//for
 	}//for
-
+	
 	//for loop to put imageView on the grid
 	for(int x = 0; x < numRows; x++){
 	    for(int y = 0; y < numCols; y++){
@@ -355,7 +333,6 @@ public class CheckersGame extends Stage{
 		    }else{
 			tiles[x][y].setImage(blackTile); //sets tile to black
 		    }
-		    // tiles[x][y].setImage(blackTile); //sets tile to black
 		    tiles[x][y].setFitWidth(100);
 		    tiles[x][y].setFitHeight(100); 
 		    grid.add(tiles[x][y], y, x);
@@ -366,7 +343,7 @@ public class CheckersGame extends Stage{
 	}//for
 	border.setCenter(grid);
     }
-
+    
     /*******************************
      * public void winner(int i)
      *
@@ -382,20 +359,16 @@ public class CheckersGame extends Stage{
      ********************************/
     public void winner(int i){
 	if(i == 1) {
-	    System.out.println("Congratulations "+playerRedName +"! You have Won!!");
 	    winnerScreen(playerRedName);
 	    playerRedWins++;
 	}
 	if(i == 0){
-	    System.out.println("Congratulations "+playerBlackName+"! You have Won!!");
 	    winnerScreen(playerBlackName);
 	    playerBlackWins++;
-	}
-	
-	restart();
-       
+	}	
+	restart();       
     }
-
+    
     /***************************************
      * public void restart()
      *
@@ -410,23 +383,18 @@ public class CheckersGame extends Stage{
 	blackPiecesTaken = 0;
 	redLabel.setText("Red Pieces Taken: " + redPiecesTaken);
 	blackLabel.setText("Black Pieces Taken: " + blackPiecesTaken);
-
+	
 	for(int x = 0; x < 8; x++){
 	    for(int y = 0; y < 8; y++){
 		tiles[x][y].setImage(redTile);
 	    }
 	}
-
-
 	//for loop to put imageView on the grid
 	for(int x = 0; x < 8; x++){
 	    for(int y = 0; y < 8; y++){
 		//if-else statement decides whether the piece will be red of black
 		if(isRed){
 		    tiles[x][y].setImage(redTile); //sets tile to red
-		    //  tiles[x][y].setFitWidth(100);
-		    //tiles[x][y].setFitHeight(100); 
-		    //grid.add(tiles[x][y] ,y,x);
 		    isRed = false; //so no side by side same colors
 		}
 		else{
@@ -437,36 +405,41 @@ public class CheckersGame extends Stage{
 		    }else{
 			tiles[x][y].setImage(blackTile); //sets tile to black
 		    }
-		    // tiles[x][y].setImage(blackTile); //sets tile to black
-		    //tiles[x][y].setFitWidth(100);
-		    //tiles[x][y].setFitHeight(100); 
-		    //grid.add(tiles[x][y], y, x);
 		    isRed = true;
 		}
 	    }//for
 	    isRed = !isRed; //so no tile are same up and down
 	}//for
-	//border.setCenter(grid);
-
     }
-
+    
+    /********************************
+     * public void checkClose()
+     *
+     * This method shows a new stage when the
+     * user clicks the close button 
+     * User can then:
+     * - press cancel to go back to the game
+     * - press close to go back to the game select screen
+     *
+     * @returns void
+     ********************************/
     public void checkClose() {
 	Stage closeWindow = new Stage();
 	closeWindow.initModality(Modality.APPLICATION_MODAL);
-
+	
 	VBox root = new VBox(20);
 	
 	Label closeLabel = new Label("Are you sure you want to close the game?");
      	root.getChildren().add(closeLabel);
 	// creating a label asking the user if they are sure they want to stop playing
-
+	
 	Button cancelButton = new Button("Cancel");
 	cancelButton.setOnAction(e -> {
 		closeWindow.close();
 	    });
 	cancelButton.setMinWidth(75);
 	// creating a button to resume the game instead of closing
-
+	
 	Button closeButton = new Button("Close");
 	closeButton.setOnAction(e -> {
 		closeWindow.close();
@@ -474,7 +447,7 @@ public class CheckersGame extends Stage{
 	    });
 	closeButton.setMinWidth(75);
 	// creating a button to close the game
-
+	
 	HBox buttonBox = new HBox(20);
 	buttonBox.getChildren().addAll(cancelButton, closeButton);
 	buttonBox.setAlignment(Pos.CENTER);
@@ -486,7 +459,7 @@ public class CheckersGame extends Stage{
 
 	closeWindow.setScene(new Scene(root));
 	closeWindow.showAndWait();
-
+	
     }
 
     /****************************
@@ -499,9 +472,9 @@ public class CheckersGame extends Stage{
      * @param int, int, Image
      * @returns int
      *****************************/
-
+    
     public int isInvalid(int row, int col, Image currentImage){
-
+	
 	if(clickCount == 1){
 	    if((currentImage==redTile)||currentImage==blackTile){
 		clickCount = 0;
@@ -512,12 +485,11 @@ public class CheckersGame extends Stage{
 	    if(currentImage != blackTile){
 		clickCount = 0;
 		return 2;
-		
 	    }
 	    return -2;
 	}	
     }
-
+    
     /************************************
      * public int isInvalid(int firstRow, int firstCol, int secondRow, int secondCol, Image currentImage)
      *
@@ -527,42 +499,37 @@ public class CheckersGame extends Stage{
      * @param int, int, int, int, Image
      * @returns int
      ************************************/
-
+    
     public int isInvalid(int firstRow, int firstCol, int secondRow, int secondCol, Image currentImage){
 	
 	if(currentImage == redPiece){
-
+	    
 	    if(firstRow == secondRow) return 1;
 	    if((firstRow + 1 != secondRow)&&(firstRow + 2 != secondRow)) return 1;
 	    if(firstCol == secondCol) return 1;
-
-
+	    
+	    
 	}else if(currentImage == blackPiece){
 	    
 	    if(firstRow == secondRow) return 2;
 	    if((firstRow -1 != secondRow)&&(firstRow - 2 != secondRow)) return 2;
 	    if(firstCol == secondCol)return 2;
-
+	    
 	}else if(currentImage == redCrownPiece){
-
-	    //	    if(((firstRow + 1 == secondRow)||(firstRow - 1 == secondRow))&&((firstCol -1 == secondCol)||(firstCol + 1 == secondCol))) return 3;
-
+	    
 	    if(firstRow == secondRow) return 3;
-	    //if((firstRow + 1 != secondRow)&&(firstRow + 2 != secondRow)) return 3;
-	    //if((firstRow -1 != secondRow)&&(firstRow - 2 != secondRow)) return 3;
-	    if(((firstRow + 1 != secondRow)&&(firstRow + 2 != secondRow))&&((firstRow -1 != secondRow)&&(firstRow - 2 != secondRow))) return 4;
+	    if(((firstRow + 1 != secondRow)&&(firstRow + 2 != secondRow))&&((firstRow -1 != secondRow)&&(firstRow - 2 != secondRow))) return 3;
 	    if(firstCol== secondCol)return 3;
-
+	    
 	}else if(currentImage == blackCrownPiece){
-
-	    // if(((firstRow + 1 == secondRow)||(firstRow - 1 == secondRow))&&((firstCol -1 == secondCol)||(firstCol + 1 == secondCol))) return 4;
+	    
 	    if(firstRow == secondRow) return 4;
 	    if(((firstRow + 1 != secondRow)&&(firstRow + 2 != secondRow))&&((firstRow -1 != secondRow)&&(firstRow - 2 != secondRow))) return 4;
 	    if(firstCol == secondCol) return 4;
 	}
 	return -1;
     }//isInvalid
-
+    
     /***************************************
      * public void winnerScreen(String)
      *
@@ -573,16 +540,16 @@ public class CheckersGame extends Stage{
      * @returns void
      **************************************/
     public void winnerScreen(String winner){
-
+	
 	Stage winnerScreen = new Stage();
 	winnerScreen.initModality(Modality.APPLICATION_MODAL);
-
+	
 	VBox root = new VBox(20);
 	
 	Label congrats = new Label("Congratulations " +winner+ "! You won the Game!!");
      	root.getChildren().add(congrats);
 	// creating a label asking the user if they are sure they want to stop playing
-
+	
 	Button replayButton = new Button("Play Again?");
 	replayButton.setOnAction(e -> {
 		winnerScreen.close();
@@ -590,7 +557,7 @@ public class CheckersGame extends Stage{
 	    });
 	replayButton.setMinWidth(75);
 	// creating a button to resume the game instead of closing
-
+	
 	Button closeButton = new Button("Close");
 	closeButton.setOnAction(e -> {
 		winnerScreen.close();
@@ -598,7 +565,7 @@ public class CheckersGame extends Stage{
 	    });
 	closeButton.setMinWidth(75);
 	// creating a button to close the game
-
+	
 	HBox buttonBox = new HBox(20);
 	buttonBox.getChildren().addAll(replayButton, closeButton);
 	buttonBox.setAlignment(Pos.CENTER);
@@ -607,11 +574,8 @@ public class CheckersGame extends Stage{
 	root.getChildren().add(buttonBox);
 	root.setAlignment(Pos.CENTER);
 	root.setPadding(new Insets(10));
-
+	
 	winnerScreen.setScene(new Scene(root));
 	winnerScreen.showAndWait();
-
-
-
     }
 }
