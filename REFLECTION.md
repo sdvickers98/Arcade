@@ -27,3 +27,8 @@ Here is a sample entry (delete this line; also: feel free to copy/paste/modify):
 
 3. **PROB:** Tetrominos sometimes fall through each other.
 
+## THU 2018-05-03 @ 4:00 PM EST
+
+1. **DONE:** Both the Tetris and Checkers Games are fully functional
+
+2. **DONE:** Added an intro with an animated element (fading image)
