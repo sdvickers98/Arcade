@@ -47,7 +47,7 @@ public class TetrisGame extends Stage{
     private int score, level, multiplier;
     private EventHandler<ActionEvent> pieceMovement;
     private Tetromino current;
-    private Label scoreLabel, levelLabel;
+    private Label scoreLabel, levelLabel, multLabel;
 
 	/**
 	 * Creates a stage and and sets up the game to be played.
@@ -87,6 +87,7 @@ public class TetrisGame extends Stage{
 
 		scoreLabel = new Label("Score: " + score);
 		levelLabel = new Label("Level: " + level);
+		multLabel = new Label("Multiplier: " + multiplier);
 
 		Button playButton = new Button("Play");
 		playButton.setMinWidth(75);
@@ -122,7 +123,7 @@ public class TetrisGame extends Stage{
 		closeButton.setOnAction(e -> checkClose());
 		// creates a button to close the window
 
-		VBox sideMenu = new VBox(20, scoreLabel, levelLabel, playButton, closeButton);
+		VBox sideMenu = new VBox(20, scoreLabel, multLabel, levelLabel, playButton, closeButton);
 		sideMenu.setMinWidth(150);
 		sideMenu.setAlignment(Pos.CENTER);
 		// creates the side menu
@@ -194,8 +195,10 @@ public class TetrisGame extends Stage{
                 else {
 					addToScore(20 * multiplier);
 
-					if (!checkForRowClear())
+					if (!checkForRowClear()) {
 						multiplier = 1;
+						multLabel.setText("Multiplier: " + multiplier);
+					}
 					// if the player continues to clear at least one row for consecutive tetrominos,
 					// the score multiplier increases, with a max of 4
 
@@ -415,8 +418,10 @@ public class TetrisGame extends Stage{
 	 */
 	private void clearRow(int row) {
     	addToScore(400 * multiplier);
-    	if (multiplier < 4)
-    		multiplier++;
+    	if (multiplier < 4) {
+			multiplier++;
+			multLabel.setText("Multiplier: " + multiplier);
+		}
     	// adds a number to the player's score equal to 400 times the current multiplier
 
     	for (int i = 0; i < NUM_COLS; i++) {
